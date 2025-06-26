@@ -1909,8 +1909,11 @@
             updateLocationDisplay();
             updateMaxAppsDisplay();
             
-            // 키워드 입력 시 실시간 업데이트
-            document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+            // 키워드 입력 시 실시간 업데이트 및 자동 저장
+            document.getElementById('keywords').addEventListener('input', function() {
+                updateKeywordsDisplay();
+                autoSaveSettings();
+            });
             
 
             
@@ -1922,8 +1925,7 @@
                 });
             });
             
-            // 키워드 입력 변경 시 자동 저장
-            document.getElementById('keywords').addEventListener('blur', autoSaveSettings);
+
             
             // 지역 체크박스 변경 시 자동 저장
             document.querySelectorAll('input[name="locations"]').forEach(checkbox => {
