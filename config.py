@@ -15,16 +15,32 @@ class Config:
         self.username = os.getenv("SARAMIN_USERNAME", "")
         self.password = os.getenv("SARAMIN_PASSWORD", "")
         
-        # 검색 조건
-        self.search_keywords = os.getenv("SEARCH_KEYWORDS", "바이오")
-        self.location = os.getenv("LOCATION", "서울")
+        # 마지막 사용 설정 불러오기
+        try:
+            from postgres_database import PostgresApplicationDatabase
+            db = PostgresApplicationDatabase()
+            
+            # 검색 조건 - 마지막 사용한 값으로 복원
+            last_keywords = db.get_last_used_keywords()
+            last_location = db.get_last_used_location()
+            last_max_apps = db.get_last_used_max_applications()
+            
+            self.search_keywords = os.getenv("SEARCH_KEYWORDS", last_keywords)
+            self.location = os.getenv("LOCATION", last_location)
+            self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", str(last_max_apps)))
+            
+        except Exception as e:
+            # 데이터베이스 오류 시 기본값 사용
+            self.search_keywords = os.getenv("SEARCH_KEYWORDS", "바이오")
+            self.location = os.getenv("LOCATION", "서울")
+            self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", "100"))
+        
         self.job_type = os.getenv("JOB_TYPE", "정규직")
         
         # 키워드 목록 파싱 (쉼표로 구분된 값들)
         self.keyword_list = [keyword.strip() for keyword in self.search_keywords.split(",") if keyword.strip()]
         
         # 지원 설정
-        self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", "10"))
         self.max_pages = int(os.getenv("MAX_PAGES", "5"))
         
         # 대기 시간 설정 (초)

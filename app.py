@@ -306,7 +306,7 @@ def add_log(message):
         app_state['logs'].pop(0)
 
 def update_config(config_data):
-    """설정 파일 업데이트"""
+    """설정 파일 업데이트 및 데이터베이스에 마지막 사용 설정 저장"""
     env_content = f"""# 사람인 로그인 정보
 SARAMIN_USERNAME={config_data.get('username', '')}
 SARAMIN_PASSWORD={config_data.get('password', '')}
@@ -329,6 +329,28 @@ BROWSER_TIMEOUT=30
     
     with open('.env', 'w', encoding='utf-8') as f:
         f.write(env_content)
+    
+    # 데이터베이스에 마지막 사용 설정 저장
+    try:
+        from postgres_database import PostgresApplicationDatabase
+        db = PostgresApplicationDatabase()
+        
+        # 마지막 사용 설정 저장
+        if config_data.get('keywords'):
+            db.save_last_used_keywords(config_data['keywords'])
+        
+        location = config_data.get('locations', config_data.get('location'))
+        if location:
+            db.save_last_used_location(location)
+        
+        max_apps = config_data.get('max_applications', config_data.get('max_apps'))
+        if max_apps:
+            db.save_last_used_max_applications(int(max_apps))
+            
+        add_log("설정이 데이터베이스에 저장되었습니다")
+            
+    except Exception as db_error:
+        add_log(f"데이터베이스 설정 저장 실패: {str(db_error)}")
 
 @app.route('/')
 def index():

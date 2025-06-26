@@ -340,6 +340,74 @@ class PostgresApplicationDatabase:
                 session.add(config)
             
             session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            session.close()
+    
+    def get_last_used_keywords(self):
+        """마지막으로 사용한 검색 키워드 조회"""
+        session = create_session()
+        try:
+            # 가장 최근 실행 기록에서 키워드 조회
+            latest_execution = session.query(ExecutionLog)\
+                .filter(ExecutionLog.keywords_searched.isnot(None))\
+                .order_by(ExecutionLog.created_at.desc())\
+                .first()
+            
+            if latest_execution and latest_execution.keywords_searched:
+                import json
+                try:
+                    keywords = json.loads(latest_execution.keywords_searched)
+                    return ",".join(keywords) if isinstance(keywords, list) else latest_execution.keywords_searched
+                except:
+                    return latest_execution.keywords_searched
+            
+            # 실행 기록이 없으면 설정값에서 조회
+            return self.get_configuration('last_keywords', 'bio')
+        except Exception as e:
+            return 'bio'  # 기본값
+        finally:
+            session.close()
+    
+    def save_last_used_keywords(self, keywords):
+        """마지막 사용 키워드 저장"""
+        try:
+            self.set_configuration('last_keywords', keywords, '마지막으로 사용한 검색 키워드')
+        except Exception as e:
+            pass  # 저장 실패해도 진행
+    
+    def get_last_used_location(self):
+        """마지막으로 사용한 지역 조회"""
+        try:
+            # 가장 최근 실행 기록이나 설정에서 지역 조회
+            return self.get_configuration('last_location', '서울')
+        except Exception as e:
+            return '서울'  # 기본값
+    
+    def save_last_used_location(self, location):
+        """마지막 사용 지역 저장"""
+        try:
+            self.set_configuration('last_location', location, '마지막으로 사용한 검색 지역')
+        except Exception as e:
+            pass  # 저장 실패해도 진행
+    
+    def get_last_used_max_applications(self):
+        """마지막으로 사용한 최대 지원수 조회"""
+        try:
+            return int(self.get_configuration('last_max_applications', '100'))
+        except Exception as e:
+            return 100  # 기본값
+    
+    def save_last_used_max_applications(self, max_apps):
+        """마지막 사용 최대 지원수 저장"""
+        try:
+            self.set_configuration('last_max_applications', str(max_apps), '마지막으로 사용한 최대 지원수')
+        except Exception as e:
+            pass  # 저장 실패해도 진행
+            
+            session.commit()
             return True
             
         except Exception as e:

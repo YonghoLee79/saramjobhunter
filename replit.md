@@ -114,6 +114,21 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
+- June 26, 2025: Automatic Settings Persistence System Complete
+  - **Database Integration for Settings**: Enhanced PostgreSQL database with user preference storage
+    - Added `get_last_used_keywords()`, `save_last_used_keywords()` methods for keyword persistence
+    - Added `get_last_used_location()`, `save_last_used_location()` methods for location persistence  
+    - Added `get_last_used_max_applications()`, `save_last_used_max_applications()` methods for application limit persistence
+    - All settings automatically saved to database when user makes changes via web interface
+  - **Configuration Class Enhancement**: Modified Config class to auto-restore last used settings
+    - Config initialization now queries database for previous user preferences
+    - Fallback to default values if database query fails
+    - Seamless restoration of keywords, location, and max applications on app restart
+  - **Web App Integration**: Updated `update_config()` function to save settings to database
+    - Every user configuration change automatically persists to PostgreSQL
+    - Real-time feedback when settings are saved to database
+    - Maintains user preferences across app restarts and server reboots
+
 - June 26, 2025: Company-Based Duplicate Application Prevention Complete
   - **UI Layout Improvement**: Moved main action buttons below usage instructions
     - Relocated "사람인 로그인", "웹 자동화 실행", "자동화 중단" buttons for better UX flow
