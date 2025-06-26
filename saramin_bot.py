@@ -67,9 +67,42 @@ class SaraminBot:
             self.driver = webdriver.Chrome(options=chrome_options)
             self.wait = WebDriverWait(self.driver, 10)
             
-            # 브라우저 시작 후 봇 탐지 우회 스크립트 실행
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            self.driver.execute_script("delete navigator.__proto__.webdriver")
+            # 고급 봇 탐지 우회 스크립트 실행
+            self.driver.execute_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                delete navigator.__proto__.webdriver;
+                
+                // Chrome detection bypass
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['ko-KR', 'ko', 'en-US', 'en']});
+                
+                // Screen and device info
+                Object.defineProperty(screen, 'width', {get: () => 1920});
+                Object.defineProperty(screen, 'height', {get: () => 1080});
+                
+                // Permission API override
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ?
+                        Promise.resolve({ state: Cypress.env('NOTIFICATION_PERMISSION') || 'granted' }) :
+                        originalQuery(parameters)
+                );
+                
+                // WebGL vendor override
+                const getParameter = WebGLRenderingContext.getParameter;
+                WebGLRenderingContext.prototype.getParameter = function(parameter) {
+                    if (parameter === 37445) return 'Intel Inc.';
+                    if (parameter === 37446) return 'Intel Iris OpenGL Engine';
+                    return getParameter(parameter);
+                };
+            """)
+            
+            # User-Agent 추가 설정
+            self.driver.execute_script("""
+                Object.defineProperty(navigator, 'userAgent', {
+                    get: () => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+                });
+            """)
             
             self.logger.info("Chrome WebDriver 설정 완료")
             return True
@@ -89,20 +122,30 @@ class SaraminBot:
             try:
                 self.logger.info(f"사람인 로그인 시도 중... ({attempt + 1}/{max_retries})")
                 
-                # 로그인 페이지로 이동 (서버 우회 방법)
+                # 사람처럼 자연스럽게 접근
                 if attempt > 0:
-                    # 재시도 시 다른 접근 방법 사용
+                    # 재시도 시 세션 초기화
                     self.driver.delete_all_cookies()
                     self.driver.execute_script("window.localStorage.clear();")
                     self.driver.execute_script("window.sessionStorage.clear();")
                     
-                # 메인 페이지를 먼저 방문한 후 로그인 페이지로 이동
-                if attempt == 0:
-                    self.driver.get(f"{self.base_url}")
-                    self.random_wait(2, 3)
+                # 메인 페이지 먼저 방문 (사람 행동 패턴)
+                self.driver.get("https://www.saramin.co.kr")
+                self.random_wait(3, 6)
                 
-                self.driver.get(f"{self.base_url}/zf_user/auth/login")
-                self.random_wait(5, 8)  # 더 긴 대기 시간
+                # 페이지 스크롤 (봇 탐지 우회)
+                self.driver.execute_script("window.scrollTo(0, 500);")
+                self.random_wait(1, 2)
+                self.driver.execute_script("window.scrollTo(0, 0);")
+                self.random_wait(2, 3)
+                
+                # 로그인 페이지로 이동
+                self.driver.get("https://www.saramin.co.kr/zf_user/auth/login")
+                self.random_wait(5, 8)
+                
+                # 페이지 완전 로딩 대기
+                self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+                self.random_wait(2, 4)
                 
                 # Alert 처리 (서버 오류 메시지)
                 try:
@@ -129,24 +172,91 @@ class SaraminBot:
                 except:
                     pass  # Alert가 없으면 정상 진행
                 
-                # 아이디 입력
-                id_input = self.wait.until(
-                    EC.presence_of_element_located((By.NAME, "id"))
-                )
+                # 로그인 필드 찾기 (다양한 선택자 시도)
+                id_selectors = [
+                    (By.ID, "loginId"),
+                    (By.NAME, "id"),
+                    (By.CSS_SELECTOR, "input[placeholder*='아이디']"),
+                    (By.CSS_SELECTOR, "input[type='text']"),
+                    (By.XPATH, "//input[@placeholder='아이디 또는 이메일']")
+                ]
+                
+                id_input = None
+                for selector_type, selector_value in id_selectors:
+                    try:
+                        id_input = self.wait.until(
+                            EC.element_to_be_clickable((selector_type, selector_value))
+                        )
+                        break
+                    except:
+                        continue
+                
+                if not id_input:
+                    self.logger.error("로그인 아이디 필드를 찾을 수 없습니다")
+                    continue
+                
+                # 자연스러운 아이디 입력
+                id_input.click()
+                self.random_wait(0.5, 1)
                 id_input.clear()
-                self.random_wait(1, 2)
+                self.random_wait(0.5, 1)
                 self.type_like_human(id_input, self.config.username)
                 
-                # 비밀번호 입력
-                password_input = self.driver.find_element(By.NAME, "password")
+                # 비밀번호 필드 찾기
+                password_selectors = [
+                    (By.ID, "password"),
+                    (By.NAME, "password"),
+                    (By.CSS_SELECTOR, "input[type='password']"),
+                    (By.CSS_SELECTOR, "input[placeholder*='비밀번호']")
+                ]
+                
+                password_input = None
+                for selector_type, selector_value in password_selectors:
+                    try:
+                        password_input = self.driver.find_element(selector_type, selector_value)
+                        break
+                    except:
+                        continue
+                
+                if not password_input:
+                    self.logger.error("비밀번호 필드를 찾을 수 없습니다")
+                    continue
+                
+                # 자연스러운 비밀번호 입력
+                password_input.click()
+                self.random_wait(0.5, 1)
                 password_input.clear()
-                self.random_wait(1, 2)
+                self.random_wait(0.5, 1)
                 self.type_like_human(password_input, self.config.password)
                 
-                self.random_wait(2, 3)
+                self.random_wait(2, 4)
                 
-                # 로그인 버튼 클릭
-                login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+                # 로그인 버튼 찾기 (다양한 선택자 시도)
+                login_selectors = [
+                    (By.CSS_SELECTOR, ".btn_login"),
+                    (By.CSS_SELECTOR, "button[type='submit']"),
+                    (By.XPATH, "//button[contains(text(), '로그인')]"),
+                    (By.CSS_SELECTOR, "input[type='submit']"),
+                    (By.CSS_SELECTOR, ".login-btn"),
+                    (By.ID, "loginBtn")
+                ]
+                
+                login_btn = None
+                for selector_type, selector_value in login_selectors:
+                    try:
+                        login_btn = self.driver.find_element(selector_type, selector_value)
+                        if login_btn.is_enabled():
+                            break
+                    except:
+                        continue
+                
+                if not login_btn:
+                    self.logger.error("로그인 버튼을 찾을 수 없습니다")
+                    continue
+                
+                # 자연스러운 버튼 클릭
+                self.driver.execute_script("arguments[0].focus();", login_btn)
+                self.random_wait(0.5, 1)
                 self.driver.execute_script("arguments[0].click();", login_btn)
                 
                 # 로그인 후 Alert 재확인
