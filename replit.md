@@ -124,6 +124,10 @@ This project is a Python-based automation bot that automatically searches and ap
     - Set default keywords to "바이오,생명공학,제약,의료기기" 
     - Radio button selection now defaults to 100 applications
     - Updated both frontend HTML and backend configuration handling
+  - **UI Simplification**: Streamlined interface for better usability
+    - Reduced location options from 17 to 5 major cities (서울, 경기, 부산, 대구, 대전)
+    - Removed 10개 and 50개 from maximum applications options
+    - Now offers only 100개, 500개, 1000개 for cleaner selection
 
 - June 26, 2025: Job Application System Critical Fixes Complete
   - **Application Button Detection Enhancement**: Comprehensive selector improvements
