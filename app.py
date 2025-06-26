@@ -589,67 +589,7 @@ def upload_resume():
         add_log(f"이력서 업로드 오류: {str(e)}")
         return jsonify({'success': False, 'message': f'오류: {str(e)}'})
 
-@app.route('/api/saramin-status', methods=['GET'])
-def get_saramin_status():
-    """사람인 지원 현황 조회"""
-    try:
-        from saramin_status_checker import SaraminStatusChecker
-        from config import Config
-        from logger_config import setup_logger
-        
-        config = Config()
-        logger = setup_logger()
-        
-        # 로그인 정보 확인
-        if not config.username or not config.password:
-            return jsonify({
-                'success': False,
-                'message': '사람인 로그인 정보가 설정되지 않았습니다',
-                'applications': [],
-                'total': 0
-            })
-        
-        add_log("사람인 지원 현황 조회 시작...")
-        
-        # 상태 확인 클래스 생성
-        checker = SaraminStatusChecker(config, logger)
-        
-        if not checker.setup_driver():
-            return jsonify({
-                'success': False,
-                'message': '브라우저 설정 실패',
-                'applications': [],
-                'total': 0
-            })
-        
-        try:
-            # 지원 현황 조회
-            status_summary = checker.get_status_summary()
-            
-            add_log(f"지원 현황 조회 완료: {status_summary.get('total_applications', 0)}개")
-            
-            return jsonify({
-                'success': True,
-                'message': '사람인 지원 현황 조회 완료',
-                'applications': status_summary.get('applications', []),
-                'total': status_summary.get('total_applications', 0),
-                'recent': status_summary.get('recent_applications', 0),
-                'status_breakdown': status_summary.get('status_breakdown', {}),
-                'last_updated': status_summary.get('last_updated'),
-                'source': 'saramin'
-            })
-            
-        finally:
-            checker.close()
-            
-    except Exception as e:
-        add_log(f"사람인 지원 현황 조회 실패: {str(e)}")
-        return jsonify({
-            'success': False,
-            'message': f'지원 현황 조회 중 오류: {str(e)}',
-            'applications': [],
-            'total': 0
-        })
+
 
 if __name__ == '__main__':
     print("사람인 자동 지원 웹 앱을 시작합니다...")
