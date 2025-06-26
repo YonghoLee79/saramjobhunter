@@ -118,59 +118,75 @@ class SaraminBot:
     
     def search_and_apply_jobs(self):
         """채용 공고 검색 및 지원"""
-        applied_count = 0
+        total_applied = 0
         
-        try:
-            # 검색 페이지로 이동
-            search_url = self.build_search_url()
-            self.driver.get(search_url)
-            self.random_wait(3, 5)
+        # 각 키워드별로 검색 및 지원
+        for keyword in self.config.keyword_list:
+            if total_applied >= self.config.max_applications_per_day:
+                self.logger.info(f"일일 최대 지원 수({self.config.max_applications_per_day})에 도달했습니다.")
+                break
+                
+            self.logger.info(f"키워드 '{keyword}' 검색 시작")
             
-            self.logger.info(f"검색 조건: {self.config.search_keyword}, {self.config.location}, {self.config.job_type}")
-            
-            page = 1
-            max_pages = self.config.max_pages
-            
-            while page <= max_pages:
-                self.logger.info(f"페이지 {page} 처리 중...")
+            try:
+                # 키워드별 검색 페이지로 이동
+                search_url = self.build_search_url(keyword)
+                self.driver.get(search_url)
+                self.random_wait(3, 5)
                 
-                # 채용 공고 목록 가져오기
-                job_links = self.get_job_links()
+                self.logger.info(f"검색 조건: {keyword}, {self.config.location}, {self.config.job_type}")
                 
-                if not job_links:
-                    self.logger.info("더 이상 채용 공고가 없습니다.")
-                    break
+                page = 1
+                max_pages = self.config.max_pages
+                keyword_applied = 0
                 
-                # 각 채용 공고에 지원
-                for job_link in job_links:
-                    if applied_count >= self.config.max_applications_per_day:
-                        self.logger.info(f"일일 최대 지원 수({self.config.max_applications_per_day})에 도달했습니다.")
-                        return applied_count
-                        
-                    if self.apply_to_job(job_link):
-                        applied_count += 1
-                        
-                    # 요청 간격 대기
-                    self.random_wait(
-                        self.config.min_delay_between_applications,
-                        self.config.max_delay_between_applications
-                    )
-                
-                # 다음 페이지로 이동
-                if not self.go_to_next_page():
-                    break
+                while page <= max_pages and total_applied < self.config.max_applications_per_day:
+                    self.logger.info(f"키워드 '{keyword}' - 페이지 {page} 처리 중...")
                     
-                page += 1
+                    # 채용 공고 목록 가져오기
+                    job_links = self.get_job_links()
+                    
+                    if not job_links:
+                        self.logger.info(f"키워드 '{keyword}' - 더 이상 채용 공고가 없습니다.")
+                        break
+                    
+                    # 각 채용 공고에 지원
+                    for job_link in job_links:
+                        if total_applied >= self.config.max_applications_per_day:
+                            self.logger.info(f"일일 최대 지원 수({self.config.max_applications_per_day})에 도달했습니다.")
+                            return total_applied
+                            
+                        if self.apply_to_job(job_link):
+                            total_applied += 1
+                            keyword_applied += 1
+                            
+                        # 요청 간격 대기
+                        self.random_wait(
+                            self.config.min_delay_between_applications,
+                            self.config.max_delay_between_applications
+                        )
+                    
+                    # 다음 페이지로 이동
+                    if not self.go_to_next_page():
+                        break
+                        
+                    page += 1
                 
-        except Exception as e:
-            self.logger.error(f"채용 공고 검색 및 지원 중 오류: {str(e)}")
-            
-        return applied_count
+                self.logger.info(f"키워드 '{keyword}' 검색 완료 - {keyword_applied}개 지원")
+                
+            except Exception as e:
+                self.logger.error(f"키워드 '{keyword}' 검색 중 오류: {str(e)}")
+                continue
+        
+        self.logger.info(f"전체 검색 완료 - 총 {total_applied}개 지원")
+        return total_applied
     
-    def build_search_url(self):
+    def build_search_url(self, keyword=None):
         """검색 URL 생성"""
+        search_keyword = keyword if keyword else self.config.keyword_list[0] if self.config.keyword_list else "바이오"
+        
         params = {
-            'searchword': self.config.search_keyword,
+            'searchword': search_keyword,
             'loc_mcd': self.get_location_code(self.config.location),
             'recruitPageCount': 50,  # 페이지당 결과 수
             'recruitSort': 'reg_dt',  # 등록일순 정렬

@@ -16,9 +16,12 @@ class Config:
         self.password = os.getenv("SARAMIN_PASSWORD", "")
         
         # 검색 조건
-        self.search_keyword = os.getenv("SEARCH_KEYWORD", "바이오")
+        self.search_keywords = os.getenv("SEARCH_KEYWORDS", "바이오")
         self.location = os.getenv("LOCATION", "서울")
         self.job_type = os.getenv("JOB_TYPE", "정규직")
+        
+        # 키워드 목록 파싱 (쉼표로 구분된 값들)
+        self.keyword_list = [keyword.strip() for keyword in self.search_keywords.split(",") if keyword.strip()]
         
         # 지원 설정
         self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", "10"))

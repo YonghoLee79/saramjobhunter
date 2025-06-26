@@ -37,7 +37,7 @@ def production_test():
     try:
         config = Config()
         print(f"✓ 설정 로드 완료")
-        print(f"  검색 키워드: {config.search_keyword}")
+        print(f"  검색 키워드: {', '.join(config.keyword_list)}")
         print(f"  지역: {config.location}")
         print(f"  고용형태: {config.job_type}")
         print(f"  헤드리스 모드: {config.headless}")

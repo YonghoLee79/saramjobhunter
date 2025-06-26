@@ -90,7 +90,7 @@ def test_configuration():
     try:
         config = Config()
         
-        print(f"✓ 검색 키워드: {config.search_keyword}")
+        print(f"✓ 검색 키워드: {', '.join(config.keyword_list)}")
         print(f"✓ 지역: {config.location}")
         print(f"✓ 고용형태: {config.job_type}")
         print(f"✓ 일일 최대 지원: {config.max_applications_per_day}개")
