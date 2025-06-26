@@ -475,23 +475,72 @@ class SaraminBot:
             self.driver.get(job_url)
             self.random_wait(2, 4)
             
-            # 채용 공고 제목 가져오기
-            try:
-                job_title = self.driver.find_element(
-                    By.CSS_SELECTOR, 
-                    ".job_tit"
-                ).text.strip()
-            except:
-                job_title = "제목 없음"
+            # 페이지가 완전히 로드될 때까지 대기
+            self.random_wait(2, 3)
             
-            # 회사명 가져오기
-            try:
-                company_name = self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    ".company_nm a"
-                ).text.strip()
-            except:
-                company_name = "회사명 없음"
+            # 채용 공고 제목 가져오기 (더 포괄적인 선택자 시도)
+            job_title = "제목 없음"
+            title_selectors = [
+                ".job_tit",
+                ".job-tit", 
+                "h1.job_title",
+                "h1",
+                ".title",
+                "[class*='title']",
+                ".job_sector .job_title",
+                ".content_job .job_tit",
+                ".job_summary .job_tit",
+                "h2.job_tit",
+                ".wrap_jv_cont .job_tit"
+            ]
+            
+            for selector in title_selectors:
+                try:
+                    element = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    if element and element.text.strip():
+                        job_title = element.text.strip()
+                        self.logger.info(f"제목 발견 ({selector}): {job_title}")
+                        break
+                except:
+                    continue
+            
+            # 제목을 못 찾은 경우 페이지 소스에서 title 태그 확인
+            if job_title == "제목 없음":
+                try:
+                    page_title = self.driver.title
+                    if "사람인" in page_title and "|" in page_title:
+                        job_title = page_title.split("|")[0].strip()
+                        self.logger.info(f"페이지 타이틀에서 제목 추출: {job_title}")
+                except:
+                    pass
+            
+            # 회사명 가져오기 (더 포괄적인 선택자 시도)
+            company_name = "회사명 없음"
+            company_selectors = [
+                ".company_nm a",
+                ".company_nm",
+                ".company-name",
+                ".corp_name a",
+                ".corp_name",
+                "[class*='company'] a",
+                "[class*='corp'] a",
+                ".job_sector .corp_name a",
+                ".content_job .company_nm a",
+                ".job_summary .company_nm a",
+                ".wrap_jv_cont .company_nm a",
+                "a[class*='company']",
+                ".area_job .company_nm a"
+            ]
+            
+            for selector in company_selectors:
+                try:
+                    element = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    if element and element.text.strip():
+                        company_name = element.text.strip()
+                        self.logger.info(f"회사명 발견 ({selector}): {company_name}")
+                        break
+                except:
+                    continue
             
             self.logger.info(f"지원 시도: {company_name} - {job_title}")
             
