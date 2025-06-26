@@ -602,10 +602,10 @@
 
         .location-checkboxes {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 6px;
             margin-bottom: 15px;
-            padding: 15px;
+            padding: 12px;
             background: #f8f9fa;
             border-radius: 8px;
             border: 1px solid #e9ecef;
@@ -634,6 +634,22 @@
 
         .checkbox-item span {
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        .checkbox-item.mini {
+            padding: 4px 8px;
+            font-size: 12px;
+            min-height: 28px;
+        }
+
+        .checkbox-item.mini input[type="checkbox"] {
+            margin-right: 6px;
+            transform: scale(0.9);
+        }
+
+        .checkbox-item.mini span {
+            font-size: 12px;
             font-weight: 500;
         }
 
@@ -959,25 +975,73 @@
                     <label for="locations">지역 (다중 선택 가능)</label>
                     <div class="location-selection">
                         <div class="location-checkboxes" id="locationCheckboxes">
-                            <label class="checkbox-item">
+                            <label class="checkbox-item mini">
                                 <input type="checkbox" name="locations" value="서울" checked>
                                 <span>서울</span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-item mini">
                                 <input type="checkbox" name="locations" value="경기">
                                 <span>경기</span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="인천">
+                                <span>인천</span>
+                            </label>
+                            <label class="checkbox-item mini">
                                 <input type="checkbox" name="locations" value="부산">
                                 <span>부산</span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-item mini">
                                 <input type="checkbox" name="locations" value="대구">
                                 <span>대구</span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="광주">
+                                <span>광주</span>
+                            </label>
+                            <label class="checkbox-item mini">
                                 <input type="checkbox" name="locations" value="대전">
                                 <span>대전</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="울산">
+                                <span>울산</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="세종">
+                                <span>세종</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="강원">
+                                <span>강원</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="충북">
+                                <span>충북</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="충남">
+                                <span>충남</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="전북">
+                                <span>전북</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="전남">
+                                <span>전남</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="경북">
+                                <span>경북</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="경남">
+                                <span>경남</span>
+                            </label>
+                            <label class="checkbox-item mini">
+                                <input type="checkbox" name="locations" value="제주">
+                                <span>제주</span>
                             </label>
                         </div>
                         <div class="location-display" id="locationDisplay"></div>
