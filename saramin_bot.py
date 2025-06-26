@@ -8,6 +8,7 @@ import random
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
@@ -45,8 +46,14 @@ class SaraminBot:
             chrome_options.add_argument("--disable-plugins")
             chrome_options.add_argument("--disable-images")
 
-            chrome_options.add_argument("--window-size=1280,720")
-            chrome_options.add_argument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            # 봇 탐지 우회를 위한 고급 설정
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+            
+            # 자동화 탐지 우회
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
             
             # 알림 차단
             prefs = {
@@ -59,6 +66,10 @@ class SaraminBot:
             # Replit 환경에서 chromium 사용
             self.driver = webdriver.Chrome(options=chrome_options)
             self.wait = WebDriverWait(self.driver, 10)
+            
+            # 브라우저 시작 후 봇 탐지 우회 스크립트 실행
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            self.driver.execute_script("delete navigator.__proto__.webdriver")
             
             self.logger.info("Chrome WebDriver 설정 완료")
             return True
@@ -531,10 +542,27 @@ class SaraminBot:
             return hashlib.md5(job_url.encode()).hexdigest()[:16]
     
     def type_like_human(self, element, text):
-        """사람처럼 타이핑하기"""
-        for char in text:
+        """사람처럼 타이핑하기 (개선된 버전)"""
+        # 타이핑 전 짧은 대기
+        time.sleep(random.uniform(0.3, 0.8))
+        
+        for i, char in enumerate(text):
             element.send_keys(char)
-            time.sleep(random.uniform(0.05, 0.15))
+            
+            # 다양한 타이핑 속도 패턴
+            if i % 3 == 0:  # 가끔 더 긴 대기
+                time.sleep(random.uniform(0.1, 0.3))
+            else:
+                time.sleep(random.uniform(0.02, 0.12))
+                
+            # 가끔 백스페이스 후 다시 타이핑 (실수 시뮬레이션)
+            if random.random() < 0.02 and len(text) > 3:
+                element.send_keys(Keys.BACKSPACE)
+                time.sleep(random.uniform(0.1, 0.2))
+                element.send_keys(char)
+        
+        # 타이핑 완료 후 대기
+        time.sleep(random.uniform(0.2, 0.5))
     
     def random_wait(self, min_seconds, max_seconds):
         """랜덤 대기"""
