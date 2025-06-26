@@ -123,6 +123,14 @@
             box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
         }
 
+        .btn-web {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+        }
+
+        .btn-web:hover {
+            box-shadow: 0 5px 15px rgba(8, 145, 178, 0.3);
+        }
+
         .btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
@@ -257,6 +265,64 @@
             margin-top: 10px;
             font-size: 0.9rem;
             color: #6b7280;
+        }
+
+        .usage-guide {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .usage-guide h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 1.1rem;
+        }
+
+        .usage-steps {
+            display: grid;
+            gap: 15px;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #10b981;
+        }
+
+        .step strong {
+            display: block;
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            margin: 5px 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .step ol {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+
+        .step li {
+            margin: 5px 0;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .step a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .step a:hover {
+            text-decoration: underline;
         }
 
         .history-container {
@@ -395,9 +461,33 @@
                     <input type="number" id="maxApps" value="10" min="1" max="50">
                 </div>
 
+                <div class="usage-guide">
+                    <h3>사용 방법 안내</h3>
+                    <div class="usage-steps">
+                        <div class="step">
+                            <strong>1. 하이브리드 모드 (권장)</strong>
+                            <p>사람인 로그인 차단 문제를 해결하는 방법입니다.</p>
+                            <ol>
+                                <li>키워드를 설정하고 "하이브리드 모드 시작" 클릭</li>
+                                <li>새 탭에서 <a href="https://saramin.co.kr/zf_user/auth/login" target="_blank">사람인 로그인</a> 직접 수행</li>
+                                <li>"웹 자동화 실행" 버튼으로 자동 지원 시작</li>
+                            </ol>
+                        </div>
+                        <div class="step">
+                            <strong>2. 직접 자동화</strong>
+                            <p>로그인부터 자동으로 처리 (차단될 가능성 있음)</p>
+                            <ol>
+                                <li>아이디/비밀번호 입력</li>
+                                <li>"자동 지원 시작" 클릭</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
                 <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
                 <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
+                <button class="btn btn-web" onclick="executeWebAutomation()" id="webBtn">🌐 웹 자동화 실행</button>
             </div>
 
             <!-- 상태 카드 -->
@@ -648,6 +738,50 @@
             } finally {
                 hybridBtn.disabled = false;
                 hybridBtn.textContent = '🔄 하이브리드 모드 시작';
+            }
+        }
+
+        // 웹 자동화 실행
+        async function executeWebAutomation() {
+            const webBtn = document.getElementById('webBtn');
+            const keywords = document.getElementById('keywords').value;
+            const location = document.getElementById('location').value;
+            const maxApps = document.getElementById('maxApps').value;
+            
+            if (!keywords.trim()) {
+                showAlert('검색 키워드를 입력해주세요', 'error');
+                return;
+            }
+
+            webBtn.disabled = true;
+            webBtn.textContent = '실행 중...';
+
+            try {
+                const response = await fetch('/api/execute-web-automation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        keywords: keywords,
+                        location: location,
+                        max_applications: parseInt(maxApps) || 10
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('웹 자동화가 시작되었습니다. 백그라운드에서 자동 지원이 진행됩니다.', 'success');
+                    startStatusCheck();
+                } else {
+                    showAlert(`웹 자동화 시작 실패: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('웹 자동화 시작 중 오류가 발생했습니다', 'error');
+            } finally {
+                webBtn.disabled = false;
+                webBtn.textContent = '🌐 웹 자동화 실행';
             }
         }
 

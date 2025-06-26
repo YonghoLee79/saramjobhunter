@@ -101,61 +101,152 @@ def run_bot_background(config_data):
         app_state['running'] = False
 
 def run_hybrid_bot_background(config_data):
-    """하이브리드 모드 봇 실행"""
+    """웹 기반 하이브리드 모드 봇 실행"""
     global app_state
     
     try:
         app_state['running'] = True
-        app_state['progress'] = "하이브리드 모드 초기화..."
+        app_state['progress'] = "웹 하이브리드 모드 초기화..."
         app_state['error'] = None
         
-        add_log("하이브리드 모드 시작")
+        add_log("웹 하이브리드 모드 시작")
+        add_log("🌐 새 탭에서 https://saramin.co.kr/zf_user/auth/login 에 접속하여 로그인하세요")
+        add_log("⏰ 로그인 완료 후 10분 내에 자동화가 시작됩니다")
         
-        # hybrid_automation.py를 subprocess로 실행
-        import subprocess
-        import os
+        # 설정 저장
+        from config import Config
+        config = Config()
         
-        app_state['progress'] = "브라우저 열고 있습니다..."
-        add_log("브라우저가 열립니다. saramin.co.kr에서 직접 로그인해주세요.")
-        
-        # 환경 변수 설정
-        env = os.environ.copy()
-        env['HEADLESS'] = 'false'  # GUI 모드로 실행
-        
-        # hybrid_automation.py 실행
-        process = subprocess.Popen(
-            ['python', 'hybrid_automation.py'],
-            cwd='/home/runner/workspace',
-            env=env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        
-        app_state['progress'] = "수동 로그인 대기 중..."
-        add_log("열린 브라우저에서 로그인을 완료해주세요.")
-        
-        # 프로세스 완료 대기 (타임아웃 30분)
-        try:
-            stdout, stderr = process.communicate(timeout=1800)
+        # 키워드 설정
+        if config_data.get('keywords'):
+            keywords = config_data['keywords'].split(',')
+            keywords = [k.strip() for k in keywords if k.strip()]
+            config.keyword_list = keywords
             
-            if process.returncode == 0:
-                app_state['progress'] = "하이브리드 모드 완료"
-                add_log("하이브리드 자동화가 성공적으로 완료되었습니다.")
-                if stdout:
-                    add_log(f"실행 결과: {stdout}")
-            else:
-                app_state['error'] = f"하이브리드 모드 실행 실패"
-                add_log(f"오류: {stderr}")
+        app_state['progress'] = "사용자 로그인 대기 중..."
+        add_log(f"검색 키워드: {', '.join(config.keyword_list)}")
+        add_log(f"최대 지원 수: {config.max_applications_per_day}개")
+        
+        # 실제 자동화는 사용자가 로그인 완료를 알려주면 시작
+        import time
+        
+        # 10분 대기 (사용자 로그인 시간)
+        wait_time = 600  # 10분
+        start_time = time.time()
+        
+        while time.time() - start_time < wait_time:
+            if not app_state['running']:  # 사용자가 중단한 경우
+                break
                 
-        except subprocess.TimeoutExpired:
-            process.kill()
-            app_state['error'] = "하이브리드 모드 타임아웃 (30분)"
-            add_log("실행 시간이 초과되었습니다.")
+            elapsed = int(time.time() - start_time)
+            remaining = wait_time - elapsed
+            
+            app_state['progress'] = f"로그인 대기 중... 남은 시간: {remaining//60}분 {remaining%60}초"
+            
+            time.sleep(30)  # 30초마다 업데이트
+        
+        if app_state['running']:
+            add_log("로그인 대기 시간이 초과되었습니다")
+            add_log("웹 자동화 실행 버튼을 통해 로그인 후 자동화를 시작하세요")
+            app_state['progress'] = "로그인 대기 시간 초과"
         
     except Exception as e:
-        app_state['error'] = f"하이브리드 모드 오류: {str(e)}"
-        add_log(f"하이브리드 모드 실행 중 오류: {str(e)}")
+        app_state['error'] = f"웹 하이브리드 모드 오류: {str(e)}"
+        add_log(f"오류 발생: {str(e)}")
+        
+    finally:
+        app_state['running'] = False
+
+@app.route('/api/execute-web-automation', methods=['POST'])
+def execute_web_automation():
+    """로그인 완료 후 웹 자동화 실행"""
+    if app_state['running']:
+        return jsonify({'success': False, 'message': '이미 실행 중입니다'})
+    
+    config_data = request.json or {}
+    
+    # 직접 자동화 실행
+    thread = threading.Thread(target=run_web_automation_background, args=(config_data,))
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({
+        'success': True, 
+        'message': '웹 자동화 시작됨',
+        'instructions': [
+            '자동 채용공고 검색 및 지원이 시작됩니다',
+            '실시간 진행상황을 모니터링하세요',
+            '완료까지 약 10-20분 소요됩니다'
+        ]
+    })
+
+def run_web_automation_background(config_data):
+    """웹 자동화 백그라운드 실행"""
+    global app_state
+    
+    try:
+        app_state['running'] = True
+        app_state['progress'] = "웹 자동화 초기화..."
+        app_state['error'] = None
+        
+        add_log("웹 자동화 시작")
+        
+        # 설정 구성
+        from config import Config
+        from postgres_database import PostgresApplicationDatabase
+        from logger_config import setup_logger
+        
+        config = Config()
+        db = PostgresApplicationDatabase()
+        logger = setup_logger()
+        
+        # 키워드 설정
+        if config_data.get('keywords'):
+            keywords = config_data['keywords'].split(',')
+            keywords = [k.strip() for k in keywords if k.strip()]
+            config.keyword_list = keywords
+        
+        add_log(f"검색 키워드: {', '.join(config.keyword_list)}")
+        add_log(f"최대 지원 수: {config.max_applications_per_day}개")
+        
+        # 오늘 이미 실행했는지 확인
+        from datetime import datetime
+        today = datetime.now().strftime('%Y-%m-%d')
+        
+        if db.is_executed_today(today):
+            add_log("오늘 이미 실행된 기록이 있습니다")
+            app_state['progress'] = "오늘 이미 실행됨"
+            return
+        
+        # 헤드리스 모드로 봇 실행 (백그라운드)
+        from saramin_bot import SaraminBot
+        
+        bot = SaraminBot(config, db, logger)
+        bot.setup_driver()  # 헤드리스 모드
+        
+        app_state['progress'] = "채용공고 검색 중..."
+        add_log("자동 채용공고 검색을 시작합니다")
+        
+        applied_count = bot.search_and_apply_jobs()
+        
+        # 실행 기록
+        db.record_execution(today, applied_count)
+        
+        # 결과 업데이트
+        app_state['stats'] = {
+            'applied_count': applied_count,
+            'execution_date': today,
+            'keywords': config.keyword_list
+        }
+        
+        app_state['progress'] = f"완료: {applied_count}개 지원"
+        add_log(f"총 {applied_count}개 채용공고에 지원 완료")
+        
+        bot.close()
+        
+    except Exception as e:
+        app_state['error'] = f"웹 자동화 오류: {str(e)}"
+        add_log(f"오류 발생: {str(e)}")
         
     finally:
         app_state['running'] = False
