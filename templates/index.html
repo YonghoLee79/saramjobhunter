@@ -469,6 +469,12 @@
                     <input type="number" id="maxApps" value="10" min="1" max="50">
                 </div>
 
+                <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
+                <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
+                <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
+                <button class="btn btn-web" onclick="executeWebAutomation()" id="webBtn">🌐 웹 자동화 실행</button>
+                <button class="btn btn-stop" onclick="stopAutomation()" id="stopBtn">⏹️ 자동화 중단</button>
+
                 <div class="usage-guide">
                     <h3>사용 방법 안내</h3>
                     <div class="usage-steps">
@@ -491,12 +497,6 @@
                         </div>
                     </div>
                 </div>
-
-                <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
-                <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
-                <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
-                <button class="btn btn-web" onclick="executeWebAutomation()" id="webBtn">🌐 웹 자동화 실행</button>
-                <button class="btn btn-stop" onclick="stopAutomation()" id="stopBtn">⏹️ 자동화 중단</button>
             </div>
 
             <!-- 상태 카드 -->
