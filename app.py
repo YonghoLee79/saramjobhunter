@@ -302,8 +302,8 @@ SARAMIN_USERNAME={config_data.get('username', '')}
 SARAMIN_PASSWORD={config_data.get('password', '')}
 
 # 검색 조건 (여러 키워드는 쉼표로 구분)
-SEARCH_KEYWORDS={config_data.get('keywords', '바이오,제약,기술영업,PM,설비,머신비젼,프로젝트 매니저')}
-LOCATION={config_data.get('location', '서울')}
+SEARCH_KEYWORDS={config_data.get('keywords', '바이오')}
+LOCATION={config_data.get('locations', config_data.get('location', '서울'))}
 JOB_TYPE={config_data.get('job_type', '정규직')}
 
 # 지원 설정
@@ -339,7 +339,7 @@ def get_config():
         })
     except:
         return jsonify({
-            'keywords': '바이오,제약,기술영업,PM,설비,머신비젼,프로젝트 매니저',
+            'keywords': '바이오',
             'location': '서울',
             'job_type': '정규직',
             'max_apps': 10,
