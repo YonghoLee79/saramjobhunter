@@ -139,6 +139,14 @@
             box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
         }
 
+        .btn-login {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .btn-login:hover {
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
         .btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
@@ -469,6 +477,7 @@
                     <input type="number" id="maxApps" value="10" min="1" max="50">
                 </div>
 
+                <button class="btn btn-login" onclick="openSaraminLogin()" id="loginBtn">🔗 사람인 로그인</button>
                 <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
                 <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
                 <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
@@ -483,7 +492,7 @@
                             <p>사람인 로그인 차단 문제를 해결하는 방법입니다.</p>
                             <ol>
                                 <li>키워드를 설정하고 "하이브리드 모드 시작" 클릭</li>
-                                <li>새 탭에서 <a href="https://saramin.co.kr/zf_user/auth/login" target="_blank">사람인 로그인</a> 직접 수행</li>
+                                <li>새 탭에서 <a href="https://saramin.co.kr/zf_user/auth/login" target="_blank" onclick="openSaraminLogin()">사람인 로그인</a> 직접 수행</li>
                                 <li>"웹 자동화 실행" 버튼으로 자동 지원 시작</li>
                             </ol>
                         </div>
@@ -823,6 +832,22 @@
                 stopBtn.disabled = false;
                 stopBtn.textContent = '⏹️ 자동화 중단';
             }
+        }
+
+        // 사람인 로그인 새 탭 열기
+        function openSaraminLogin() {
+            const loginUrl = 'https://saramin.co.kr/zf_user/auth/login';
+            const newWindow = window.open(loginUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            
+            if (newWindow) {
+                newWindow.focus();
+                showAlert('새 탭에서 사람인 로그인을 완료한 후 "웹 자동화 실행" 버튼을 클릭하세요', 'info');
+            } else {
+                showAlert('팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용하거나 직접 사람인 사이트로 이동하세요', 'error');
+                // 팝업이 차단된 경우 직접 이동
+                window.open(loginUrl, '_blank');
+            }
+            return false; // 기본 링크 동작 방지
         }
 
         // 상태 확인

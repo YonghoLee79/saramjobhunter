@@ -114,20 +114,22 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
-- June 26, 2025: Finalized hybrid automation solution due to Saramin bot detection
+- June 26, 2025: Completed comprehensive hybrid automation system with web-based interface
   - **Bot Detection Issue**: Saramin's "내부 서버 문제로 로그인이 실패 되었습니다" indicates advanced bot detection
   - **Multiple Evasion Attempts Failed**: 
     - Browser fingerprint masking (User-Agent, canvas, WebGL manipulation)
     - Human behavior simulation (random delays, natural typing patterns)
     - Stealth mode with undetected-chromedriver
     - Complete browser configuration optimization
-  - **Final Solution**: Hybrid automation system proven most reliable
-    - User performs manual login to bypass bot detection
-    - System automatically handles job search and applications post-login
-    - Real-time monitoring through Flask web interface
-  - **System Status**: All components operational except automated login
-  - **Documentation Created**: Usage guides, troubleshooting, and status reports
-  - **Database**: PostgreSQL tracking 4 successful applications across 1 execution
+  - **Final Solution**: Web-based hybrid automation system with enhanced user experience
+    - Direct "사람인 로그인" button for easy new tab access
+    - Improved popup handling with fallback mechanisms
+    - Automatic process management (stops existing processes before starting new ones)
+    - Real-time control with start/stop functionality
+    - Enhanced user interface with clear usage instructions
+  - **System Status**: Fully operational hybrid mode with seamless user workflow
+  - **User Interface**: Optimized button placement and comprehensive usage guide
+  - **Database**: PostgreSQL tracking with full application history
   - **Keywords Active**: 바이오, 생명공학, 제약, 의료기기, 기술영업, PM, 설비, 머신비젼
 
 ## Changelog
