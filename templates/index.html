@@ -542,6 +542,26 @@
             font-style: italic;
         }
 
+        /* Saramin status specific styling */
+        .status-badge.saramin {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .source-tag {
+            font-size: 10px;
+            color: #2196F3;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
         .resume-option {
             margin-bottom: 15px;
         }
@@ -1141,6 +1161,7 @@
         <div class="card">
             <div class="form-group">
                 <button onclick="loadApplicationHistory()" class="btn">지원 내역 새로고침</button>
+                <button onclick="loadSaraminStatus()" class="btn btn-secondary" style="margin-left: 10px;">사람인 지원 현황 조회</button>
             </div>
             
             <div id="applicationHistory">
@@ -1841,6 +1862,58 @@
                 uploadBtn.textContent = '📁 이력서 파일 업로드하여 분석';
                 // 파일 입력 초기화
                 fileInput.value = '';
+            }
+        }
+
+        // 사람인 지원 현황 조회
+        async function loadSaraminStatus() {
+            const historyContainer = document.getElementById('applicationHistory');
+            historyContainer.innerHTML = '<p class="text-gray">사람인 지원 현황을 조회하는 중...</p>';
+            
+            try {
+                const response = await fetch('/api/saramin-status');
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.applications && data.applications.length > 0) {
+                        let html = `
+                            <div style="margin-bottom: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px;">
+                                <strong>사람인 지원 현황</strong> (총 ${data.total}개, 최근 ${data.recent}개)
+                                <br><small>마지막 업데이트: ${data.last_updated}</small>
+                            </div>
+                            <div class="application-list">
+                        `;
+                        
+                        data.applications.forEach(app => {
+                            html += `
+                                <div class="application-item" style="border-left: 4px solid #2196F3;">
+                                    <div class="application-header">
+                                        <span class="company-name">${app.company}</span>
+                                        <span class="status-badge saramin">${app.status}</span>
+                                    </div>
+                                    <div class="job-title">${app.position}</div>
+                                    <div class="application-date">지원일: ${app.apply_date}</div>
+                                    <div class="source-tag">출처: 사람인</div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += '</div>';
+                        historyContainer.innerHTML = html;
+                        
+                        showAlert(`사람인에서 ${data.total}개의 지원 내역을 조회했습니다`, 'success');
+                    } else {
+                        historyContainer.innerHTML = '<p class="text-gray">사람인에서 지원 내역을 찾을 수 없습니다</p>';
+                        showAlert('사람인 지원 내역이 없습니다', 'info');
+                    }
+                } else {
+                    historyContainer.innerHTML = `<p class="text-red">사람인 지원 현황 조회 실패: ${data.message}</p>`;
+                    showAlert(`사람인 지원 현황 조회 실패: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('사람인 지원 현황 조회 실패:', error);
+                historyContainer.innerHTML = '<p class="text-red">사람인 지원 현황 조회 중 오류가 발생했습니다</p>';
+                showAlert('사람인 지원 현황 조회 중 오류가 발생했습니다', 'error');
             }
         }
 

@@ -114,6 +114,20 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
+- June 26, 2025: Saramin Application Status Monitoring System Complete
+  - **Direct Saramin Integration**: Added real-time application status checking from Saramin website
+    - Created `saramin_status_checker.py` module with automated login and status parsing
+    - Added `/api/saramin-status` endpoint for web interface integration
+    - Implemented comprehensive status data extraction including company names, positions, application dates, and status
+  - **Enhanced Web Interface**: Added dedicated "사람인 지원 현황 조회" button in application history section
+    - Real-time status fetching with loading states and error handling
+    - Custom styling for Saramin-sourced data with blue theme and distinct badges
+    - Seamless integration with existing application history display system
+  - **Robust Error Handling**: Complete fallback system for login failures and connection issues
+    - Detailed error messages for missing credentials or browser setup failures
+    - Comprehensive logging for debugging application status retrieval process
+    - Graceful degradation when Saramin server is unavailable or authentication fails
+
 - June 26, 2025: Automatic Settings Persistence System Complete
   - **Database Integration for Settings**: Enhanced PostgreSQL database with user preference storage
     - Added `get_last_used_keywords()`, `save_last_used_keywords()` methods for keyword persistence
