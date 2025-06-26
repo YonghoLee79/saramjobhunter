@@ -21,6 +21,68 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 배경 브레인롯 영상 */
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.2;
+            filter: blur(3px) saturate(1.5) hue-rotate(45deg);
+            animation: brainrotPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes brainrotPulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: blur(3px) saturate(1.5) hue-rotate(45deg) brightness(1);
+            }
+            50% {
+                transform: scale(1.05) rotate(1deg);
+                filter: blur(2px) saturate(2) hue-rotate(90deg) brightness(1.2);
+            }
+            100% {
+                transform: scale(1.1) rotate(-1deg);
+                filter: blur(4px) saturate(1.8) hue-rotate(180deg) brightness(0.9);
+            }
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 50%, rgba(255, 75, 162, 0.8) 100%);
+            z-index: -1;
+            animation: overlayShift 6s ease-in-out infinite;
+        }
+
+        @keyframes overlayShift {
+            0% {
+                background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 50%, rgba(255, 75, 162, 0.8) 100%);
+            }
+            25% {
+                background: linear-gradient(225deg, rgba(255, 126, 234, 0.8) 0%, rgba(118, 200, 162, 0.8) 50%, rgba(102, 75, 255, 0.8) 100%);
+            }
+            50% {
+                background: linear-gradient(315deg, rgba(200, 75, 162, 0.8) 0%, rgba(255, 126, 234, 0.8) 50%, rgba(118, 200, 255, 0.8) 100%);
+            }
+            75% {
+                background: linear-gradient(45deg, rgba(118, 255, 162, 0.8) 0%, rgba(255, 75, 234, 0.8) 50%, rgba(200, 126, 255, 0.8) 100%);
+            }
+            100% {
+                background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 50%, rgba(255, 75, 162, 0.8) 100%);
+            }
         }
 
         .container {
@@ -660,6 +722,16 @@
     </style>
 </head>
 <body>
+    <!-- 배경 브레인롯 영상 -->
+    <video class="background-video" autoplay muted loop playsinline>
+        <source src="https://cdn.pixabay.com/video/2022/12/06/141737-779345411_large.mp4" type="video/mp4">
+        <source src="https://cdn.pixabay.com/video/2020/03/31/34721-403001274_large.mp4" type="video/mp4">
+        <!-- Fallback to animated gradient if videos don't load -->
+    </video>
+    
+    <!-- 비디오 오버레이 -->
+    <div class="video-overlay"></div>
+    
     <div class="container">
         <div class="header">
             <h1>🎯 사람인 자동 지원 시스템</h1>
