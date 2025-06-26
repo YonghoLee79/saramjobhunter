@@ -78,9 +78,20 @@ class SaraminBot:
             try:
                 self.logger.info(f"사람인 로그인 시도 중... ({attempt + 1}/{max_retries})")
                 
-                # 로그인 페이지로 이동
+                # 로그인 페이지로 이동 (서버 우회 방법)
+                if attempt > 0:
+                    # 재시도 시 다른 접근 방법 사용
+                    self.driver.delete_all_cookies()
+                    self.driver.execute_script("window.localStorage.clear();")
+                    self.driver.execute_script("window.sessionStorage.clear();")
+                    
+                # 메인 페이지를 먼저 방문한 후 로그인 페이지로 이동
+                if attempt == 0:
+                    self.driver.get(f"{self.base_url}")
+                    self.random_wait(2, 3)
+                
                 self.driver.get(f"{self.base_url}/zf_user/auth/login")
-                self.random_wait(3, 5)
+                self.random_wait(5, 8)  # 더 긴 대기 시간
                 
                 # Alert 처리 (서버 오류 메시지)
                 try:
@@ -91,7 +102,16 @@ class SaraminBot:
                     if "내부 서버 문제" in alert_text:
                         alert.accept()
                         self.logger.warning(f"서버 문제 감지 - 재시도 {attempt + 1}/{max_retries}")
-                        self.random_wait(10, 15)  # 서버 안정화 대기
+                        # 서버 문제 시 더 긴 대기와 브라우저 초기화
+                        self.random_wait(20, 30)
+                        if attempt < max_retries - 1:
+                            # 브라우저 완전 재시작
+                            try:
+                                self.driver.quit()
+                            except:
+                                pass
+                            self.setup_driver()
+                            self.random_wait(5, 10)
                         continue
                     else:
                         alert.accept()
