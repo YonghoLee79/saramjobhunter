@@ -6,6 +6,7 @@ Saramin Job Application Web App
 
 from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import threading
 import time
 import os
@@ -16,6 +17,7 @@ from config import Config
 from postgres_database import PostgresApplicationDatabase
 from logger_config import setup_logger
 from saramin_bot import SaraminBot
+from resume_analyzer import ResumeAnalyzer
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -29,6 +31,19 @@ app_state = {
     'stats': {},
     'error': None
 }
+
+# 파일 업로드 설정
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc', 'txt'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB 제한
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def run_bot_background(config_data):
     """백그라운드에서 봇 실행"""
@@ -453,6 +468,55 @@ def test_login():
             
     except Exception as e:
         add_log(f"로그인 테스트 오류: {str(e)}")
+        return jsonify({'success': False, 'message': f'오류: {str(e)}'})
+
+@app.route('/api/upload-resume', methods=['POST'])
+def upload_resume():
+    """이력서 업로드 및 키워드 추출"""
+    try:
+        if 'resume' not in request.files:
+            return jsonify({'success': False, 'message': '파일이 선택되지 않았습니다.'})
+        
+        file = request.files['resume']
+        if file.filename == '':
+            return jsonify({'success': False, 'message': '파일이 선택되지 않았습니다.'})
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            # 파일명에 타임스탬프 추가하여 중복 방지
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"{timestamp}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            # 이력서 분석
+            analyzer = ResumeAnalyzer()
+            result = analyzer.analyze_resume(filepath)
+            
+            # 임시 파일 삭제
+            try:
+                os.remove(filepath)
+            except:
+                pass
+            
+            if result['success']:
+                add_log(f"이력서 분석 완료: {len(result['keywords'])}개 키워드 추출")
+                return jsonify({
+                    'success': True,
+                    'keywords': result['keywords'],
+                    'message': result['message']
+                })
+            else:
+                add_log(f"이력서 분석 실패: {result['message']}")
+                return jsonify({
+                    'success': False,
+                    'message': result['message']
+                })
+        else:
+            return jsonify({'success': False, 'message': '지원하지 않는 파일 형식입니다. (PDF, DOCX, DOC, TXT만 가능)'})
+            
+    except Exception as e:
+        add_log(f"이력서 업로드 오류: {str(e)}")
         return jsonify({'success': False, 'message': f'오류: {str(e)}'})
 
 if __name__ == '__main__':

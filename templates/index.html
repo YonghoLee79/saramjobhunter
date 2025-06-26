@@ -283,6 +283,72 @@
             color: #6b7280;
         }
 
+        .file-upload-container {
+            margin-top: 8px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 230, 149, 0.3);
+        }
+
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .upload-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .upload-status.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .upload-status.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .upload-status.loading {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .upload-help {
+            margin-top: 8px;
+        }
+
+        .upload-help small {
+            color: #666;
+            font-style: italic;
+        }
+
         .usage-guide {
             background: #fafafa;
             border: 1px solid #e5e7eb;
@@ -442,7 +508,20 @@
             <div class="card">
                 <h2>⚙️ 지원 설정</h2>
                 
-
+                <!-- 이력서 업로드 섹션 -->
+                <div class="form-group">
+                    <label for="resumeFile">📄 이력서 업로드하여 키워드 자동 추출</label>
+                    <div class="file-upload-container">
+                        <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" style="display: none;">
+                        <button type="button" id="uploadBtn" class="upload-btn">
+                            📁 이력서 파일 선택 (PDF, DOCX, DOC, TXT)
+                        </button>
+                        <div id="uploadStatus" class="upload-status"></div>
+                    </div>
+                    <div class="upload-help">
+                        <small>AI가 이력서를 분석하여 취업에 적합한 키워드 10개를 자동으로 추출합니다</small>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label for="keywords">검색 키워드 (쉼표로 구분)</label>
@@ -1004,6 +1083,89 @@
             };
             return statusMap[status] || status;
         }
+
+        // 이력서 업로드 기능
+        async function handleResumeUpload() {
+            const fileInput = document.getElementById('resumeFile');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            const file = fileInput.files[0];
+            if (!file) {
+                showAlert('파일을 선택해주세요', 'error');
+                return;
+            }
+            
+            // 파일 크기 검사 (16MB 제한)
+            if (file.size > 16 * 1024 * 1024) {
+                showAlert('파일 크기가 너무 큽니다. 16MB 이하의 파일을 선택해주세요', 'error');
+                return;
+            }
+            
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '📤 분석 중...';
+            uploadStatus.className = 'upload-status loading';
+            uploadStatus.textContent = 'AI가 이력서를 분석하고 있습니다...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('resume', file);
+                
+                const response = await fetch('/api/upload-resume', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    uploadStatus.className = 'upload-status success';
+                    uploadStatus.textContent = `${result.keywords.length}개의 키워드가 추출되었습니다!`;
+                    
+                    // 키워드를 입력란에 설정
+                    const keywordsTextarea = document.getElementById('keywords');
+                    keywordsTextarea.value = result.keywords.join(',');
+                    updateKeywordsDisplay();
+                    
+                    showAlert(`이력서 분석 완료: ${result.keywords.join(', ')}`, 'success');
+                } else {
+                    uploadStatus.className = 'upload-status error';
+                    uploadStatus.textContent = result.message;
+                    showAlert(`이력서 분석 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                uploadStatus.className = 'upload-status error';
+                uploadStatus.textContent = '분석 중 오류가 발생했습니다';
+                showAlert('이력서 업로드 중 오류가 발생했습니다', 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📁 이력서 파일 선택 (PDF, DOCX, DOC, TXT)';
+                // 파일 입력 초기화
+                fileInput.value = '';
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfig();
+            loadApplicationHistory();
+            
+            // 키워드 표시 업데이트
+            updateKeywordsDisplay();
+            
+            // 키워드 입력 시 실시간 업데이트
+            document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+            
+            // 이력서 업로드 이벤트 리스너
+            const uploadBtn = document.getElementById('uploadBtn');
+            const resumeFile = document.getElementById('resumeFile');
+            
+            uploadBtn.addEventListener('click', () => {
+                resumeFile.click();
+            });
+            
+            resumeFile.addEventListener('change', handleResumeUpload);
+        });
 
         // 페이지 언로드 시 interval 정리
         window.onbeforeunload = function() {
