@@ -251,6 +251,80 @@
             color: #6b7280;
         }
 
+        .history-container {
+            margin-top: 15px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .history-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .history-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .keyword-tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-applied,
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-running {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .text-gray {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .text-red {
+            color: #dc2626;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -363,6 +437,30 @@
         </div>
     </div>
 
+    <!-- 지원 내역 섹션 -->
+    <div class="section">
+        <h2>📋 지원 내역</h2>
+        <div class="card">
+            <div class="form-group">
+                <button onclick="loadApplicationHistory()" class="btn">지원 내역 새로고침</button>
+            </div>
+            
+            <div id="applicationHistory">
+                <p class="text-gray">지원 내역을 불러오는 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 실행 이력 섹션 -->
+    <div class="section">
+        <h2>📊 실행 이력</h2>
+        <div class="card">
+            <div id="executionHistory">
+                <p class="text-gray">실행 이력을 불러오는 중...</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         let statusCheckInterval;
         
@@ -371,6 +469,8 @@
             loadConfig();
             updateKeywordsDisplay();
             startStatusCheck();
+            loadApplicationHistory();
+            loadExecutionHistory();
         };
 
         // 설정 불러오기
@@ -578,6 +678,98 @@
         // 상태 확인 시작
         function startStatusCheck() {
             statusCheckInterval = setInterval(checkStatus, 2000); // 2초마다 확인
+        }
+
+        // 지원 내역 불러오기
+        async function loadApplicationHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                const container = document.getElementById('applicationHistory');
+                
+                if (data.applications && data.applications.length > 0) {
+                    let html = '<div class="history-container">';
+                    html += '<table class="history-table">';
+                    html += '<thead><tr><th>지원일</th><th>회사명</th><th>직무</th><th>키워드</th><th>상태</th></tr></thead>';
+                    html += '<tbody>';
+                    
+                    data.applications.forEach(app => {
+                        const date = new Date(app.application_date).toLocaleDateString('ko-KR');
+                        html += `<tr>
+                            <td>${date}</td>
+                            <td><strong>${app.company_name}</strong></td>
+                            <td>${app.job_title}</td>
+                            <td><span class="keyword-tag">${app.keyword || '기본'}</span></td>
+                            <td><span class="status-${app.status}">${getStatusText(app.status)}</span></td>
+                        </tr>`;
+                    });
+                    
+                    html += '</tbody></table></div>';
+                    container.innerHTML = html;
+                    
+                    // 통계 업데이트
+                    if (data.statistics) {
+                        document.getElementById('totalApps').textContent = data.statistics.total_applications || 0;
+                        document.getElementById('todayApps').textContent = data.statistics.today_applications || 0;
+                    }
+                } else {
+                    container.innerHTML = '<p class="text-gray">아직 지원 내역이 없습니다.</p>';
+                }
+            } catch (error) {
+                console.error('지원 내역 로드 실패:', error);
+                document.getElementById('applicationHistory').innerHTML = '<p class="text-red">지원 내역을 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // 실행 이력 불러오기
+        async function loadExecutionHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                const container = document.getElementById('executionHistory');
+                
+                if (data.executions && data.executions.length > 0) {
+                    let html = '<div class="history-container">';
+                    html += '<table class="history-table">';
+                    html += '<thead><tr><th>실행일</th><th>지원수</th><th>검색 키워드</th><th>상태</th></tr></thead>';
+                    html += '<tbody>';
+                    
+                    data.executions.forEach(exec => {
+                        const date = new Date(exec.execution_date).toLocaleDateString('ko-KR');
+                        const keywords = exec.keywords_searched ? JSON.parse(exec.keywords_searched).join(', ') : '기본';
+                        html += `<tr>
+                            <td>${date}</td>
+                            <td><strong>${exec.applications_count}건</strong></td>
+                            <td>${keywords}</td>
+                            <td><span class="status-${exec.status}">${getStatusText(exec.status)}</span></td>
+                        </tr>`;
+                    });
+                    
+                    html += '</tbody></table></div>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p class="text-gray">아직 실행 이력이 없습니다.</p>';
+                }
+            } catch (error) {
+                console.error('실행 이력 로드 실패:', error);
+                document.getElementById('executionHistory').innerHTML = '<p class="text-red">실행 이력을 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // 상태 텍스트 변환
+        function getStatusText(status) {
+            const statusMap = {
+                'applied': '지원완료',
+                'completed': '실행완료',
+                'running': '실행중',
+                'failed': '실패',
+                'interview': '면접',
+                'rejected': '불합격',
+                'hired': '합격'
+            };
+            return statusMap[status] || status;
         }
 
         // 페이지 언로드 시 interval 정리
