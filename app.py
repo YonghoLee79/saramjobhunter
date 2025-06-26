@@ -378,6 +378,16 @@ def get_config():
             'max_pages': 5
         })
 
+@app.route('/api/save-config', methods=['POST'])
+def save_config():
+    """설정 저장"""
+    try:
+        config_data = request.json
+        update_config(config_data)
+        return jsonify({'success': True, 'message': '설정이 저장되었습니다'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'설정 저장 실패: {str(e)}'})
+
 @app.route('/api/start', methods=['POST'])
 def start_bot():
     """봇 시작 (기본 모드)"""
@@ -385,6 +395,9 @@ def start_bot():
         return jsonify({'success': False, 'message': '이미 실행 중입니다'})
     
     config_data = request.json
+    
+    # 설정 먼저 저장
+    update_config(config_data)
     
     # 필수 정보 확인
     if not config_data.get('username') or not config_data.get('password'):
@@ -404,6 +417,9 @@ def start_hybrid_bot():
         return jsonify({'success': False, 'message': '이미 실행 중입니다'})
     
     config_data = request.json or {}
+    
+    # 설정 먼저 저장
+    update_config(config_data)
     
     # 하이브리드 모드 안내
     app_state['logs'].append("하이브리드 모드 시작: 브라우저에서 직접 로그인해주세요")
