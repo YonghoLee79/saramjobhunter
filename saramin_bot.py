@@ -495,30 +495,64 @@ class SaraminBot:
             
             self.logger.info(f"지원 시도: {company_name} - {job_title}")
             
-            # 지원하기 버튼 찾기
+            # 지원하기 버튼 찾기 (2024년 사람인 웹사이트 구조 반영)
             apply_button = None
-            try:
-                # 다양한 지원하기 버튼 셀렉터 시도
-                selectors = [
-                    ".btn_apply",
-                    ".apply_btn", 
-                    "button[class*='apply']",
-                    "a[class*='apply']"
+            
+            # CSS 선택자들 시도
+            css_selectors = [
+                "button.btn_apply",  # 기본 지원하기 버튼
+                "a.btn_apply",       # 링크 형태 지원하기 버튼
+                ".btn-apply",        # 대시 형태
+                "button[onclick*='apply']",  # onclick 이벤트 포함
+                "a[href*='apply']",  # href에 apply 포함
+                ".apply-btn",        # 일반적인 클래스명
+                ".job_apply button", # job_apply 영역 내 버튼
+                ".apply_area button" # apply_area 영역 내 버튼
+            ]
+            
+            for selector in css_selectors:
+                try:
+                    apply_button = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    if apply_button.is_displayed() and apply_button.is_enabled():
+                        self.logger.info(f"지원하기 버튼 발견 (CSS): {selector}")
+                        break
+                except:
+                    continue
+            
+            # CSS 선택자로 찾지 못한 경우 XPath로 텍스트 기반 검색
+            if not apply_button:
+                xpath_selectors = [
+                    "//button[contains(text(), '지원하기')]",
+                    "//a[contains(text(), '지원하기')]",
+                    "//button[contains(text(), '즉시지원')]", 
+                    "//a[contains(text(), '즉시지원')]",
+                    "//button[contains(@class, 'apply')]",
+                    "//a[contains(@class, 'apply')]"
                 ]
                 
-                for selector in selectors:
+                for xpath in xpath_selectors:
                     try:
-                        apply_button = self.driver.find_element(By.CSS_SELECTOR, selector)
+                        apply_button = self.driver.find_element(By.XPATH, xpath)
                         if apply_button.is_displayed() and apply_button.is_enabled():
+                            self.logger.info(f"지원하기 버튼 발견 (XPath): {xpath}")
                             break
                     except:
                         continue
-                        
-            except Exception as e:
-                self.logger.warning(f"지원하기 버튼을 찾을 수 없습니다: {str(e)}")
             
             if not apply_button:
-                self.logger.warning("지원하기 버튼을 찾을 수 없습니다. 마감되었거나 웹사이트 구조가 변경되었을 수 있습니다.")
+                # 페이지 HTML을 로그에 기록하여 디버깅
+                page_source = self.driver.page_source
+                current_url = self.driver.current_url
+                self.logger.warning(f"지원하기 버튼을 찾을 수 없습니다.")
+                self.logger.warning(f"현재 URL: {current_url}")
+                self.logger.warning(f"페이지에서 '지원' 관련 텍스트 확인 중...")
+                
+                # 지원 관련 요소가 있는지 확인
+                if "지원하기" in page_source or "즉시지원" in page_source:
+                    self.logger.warning("페이지에 지원하기 텍스트가 있지만 버튼을 찾을 수 없습니다.")
+                else:
+                    self.logger.warning("마감된 공고이거나 지원이 불가능한 상태입니다.")
+                
                 return False
             
             # 지원하기 버튼 클릭
@@ -542,39 +576,101 @@ class SaraminBot:
     def submit_application(self):
         """지원서 제출"""
         try:
-            # 이력서 선택 (첫 번째 이력서 사용)
-            try:
-                resume_radio = self.wait.until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='radio'][name*='resume']"))
-                )
-                resume_radio.click()
-                self.random_wait(1, 2)
-            except:
-                self.logger.warning("이력서 선택 요소를 찾을 수 없습니다.")
+            self.logger.info("지원서 제출 과정 시작")
             
-            # 지원하기 버튼 클릭
+            # 현재 페이지가 지원서 작성 페이지인지 확인
+            current_url = self.driver.current_url
+            self.logger.info(f"현재 URL: {current_url}")
+            
+            # 이력서 선택 (다양한 선택자 시도)
+            resume_selected = False
+            resume_selectors = [
+                "input[type='radio'][name*='resume']",
+                "input[type='radio'][name*='cv']", 
+                "input[type='radio'][class*='resume']",
+                ".resume-select input[type='radio']",
+                ".cv-select input[type='radio']"
+            ]
+            
+            for selector in resume_selectors:
+                try:
+                    resume_radios = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                    if resume_radios:
+                        # 첫 번째 이력서 선택
+                        first_resume = resume_radios[0]
+                        if first_resume.is_enabled():
+                            self.driver.execute_script("arguments[0].click();", first_resume)
+                            self.logger.info(f"이력서 선택 완료: {selector}")
+                            resume_selected = True
+                            self.random_wait(1, 2)
+                            break
+                except Exception as e:
+                    self.logger.debug(f"이력서 선택자 시도 실패 {selector}: {str(e)}")
+                    continue
+            
+            if not resume_selected:
+                self.logger.warning("이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.")
+            
+            # 지원서 제출 버튼 찾기 (더 포괄적인 검색)
             submit_selectors = [
                 "button[class*='submit']",
                 "button[class*='apply']", 
+                "input[type='submit']",
+                "button:contains('지원하기')",
+                "button:contains('제출하기')",
+                "button:contains('지원완료')",
+                ".btn_submit",
                 ".btn_apply",
-                "input[type='submit']"
+                ".submit-btn",
+                ".apply-btn"
             ]
             
             submit_button = None
             for selector in submit_selectors:
                 try:
-                    submit_button = self.driver.find_element(By.CSS_SELECTOR, selector)
-                    if submit_button.is_displayed() and submit_button.is_enabled():
-                        break
+                    if ":contains" in selector:
+                        # XPath로 텍스트 기반 검색
+                        xpath_selectors = [
+                            "//button[contains(text(), '지원하기')]",
+                            "//button[contains(text(), '제출하기')]",
+                            "//button[contains(text(), '지원완료')]",
+                            "//input[@type='submit' and contains(@value, '지원')]"
+                        ]
+                        for xpath in xpath_selectors:
+                            try:
+                                submit_button = self.driver.find_element(By.XPATH, xpath)
+                                if submit_button.is_displayed() and submit_button.is_enabled():
+                                    self.logger.info(f"제출 버튼 발견: {xpath}")
+                                    break
+                            except:
+                                continue
+                    else:
+                        submit_button = self.driver.find_element(By.CSS_SELECTOR, selector)
+                        if submit_button.is_displayed() and submit_button.is_enabled():
+                            self.logger.info(f"제출 버튼 발견: {selector}")
+                            break
                 except:
                     continue
+                
+                if submit_button and submit_button.is_displayed() and submit_button.is_enabled():
+                    break
             
             if submit_button:
+                self.logger.info("지원서 제출 버튼 클릭")
                 self.driver.execute_script("arguments[0].click();", submit_button)
-                self.random_wait(2, 3)
+                self.random_wait(3, 5)
                 
-                # 지원 완료 확인
-                # 성공 메시지나 URL 변경을 확인
+                # 지원 완료 확인 (더 정확한 검증)
+                success_confirmed = False
+                
+                # URL 변경 확인
+                new_url = self.driver.current_url
+                if new_url != current_url:
+                    self.logger.info(f"URL 변경 감지: {current_url} -> {new_url}")
+                    if "complete" in new_url or "success" in new_url or "apply" in new_url:
+                        success_confirmed = True
+                
+                # 성공 메시지 확인
                 success_indicators = [
                     "지원이 완료",
                     "지원완료", 
