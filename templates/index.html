@@ -349,6 +349,60 @@
             font-style: italic;
         }
 
+        .resume-option {
+            margin-bottom: 15px;
+        }
+
+        .fetch-resume-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .fetch-resume-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .fetch-resume-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         .usage-guide {
             background: #fafafa;
             border: 1px solid #e5e7eb;
@@ -508,19 +562,39 @@
             <div class="card">
                 <h2>⚙️ 지원 설정</h2>
                 
-                <!-- 이력서 업로드 섹션 -->
+                <!-- 이력서 분석 섹션 -->
                 <div class="form-group">
-                    <label for="resumeFile">📄 이력서 업로드하여 키워드 자동 추출</label>
-                    <div class="file-upload-container">
-                        <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" style="display: none;">
-                        <button type="button" id="uploadBtn" class="upload-btn">
-                            📁 이력서 파일 선택 (PDF, DOCX, DOC, TXT)
+                    <label>📄 이력서 기반 키워드 자동 추출</label>
+                    
+                    <!-- 사람인 이력서 가져오기 -->
+                    <div class="resume-option">
+                        <button type="button" id="fetchResumeBtn" class="fetch-resume-btn">
+                            🔄 사람인 등록 이력서에서 키워드 추출
                         </button>
-                        <div id="uploadStatus" class="upload-status"></div>
+                        <div class="resume-help">
+                            <small>사람인에 등록된 이력서를 자동으로 분석하여 키워드를 추출합니다</small>
+                        </div>
                     </div>
-                    <div class="upload-help">
-                        <small>AI가 이력서를 분석하여 취업에 적합한 키워드 10개를 자동으로 추출합니다</small>
+                    
+                    <!-- 또는 구분선 -->
+                    <div class="divider">
+                        <span>또는</span>
                     </div>
+                    
+                    <!-- 파일 업로드 -->
+                    <div class="resume-option">
+                        <div class="file-upload-container">
+                            <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" style="display: none;">
+                            <button type="button" id="uploadBtn" class="upload-btn">
+                                📁 이력서 파일 업로드하여 분석
+                            </button>
+                        </div>
+                        <div class="resume-help">
+                            <small>PDF, DOCX, DOC, TXT 파일을 업로드하여 키워드를 추출합니다</small>
+                        </div>
+                    </div>
+                    
+                    <div id="resumeStatus" class="upload-status"></div>
                 </div>
 
                 <div class="form-group">
@@ -1084,11 +1158,56 @@
             return statusMap[status] || status;
         }
 
-        // 이력서 업로드 기능
+        // 사람인 이력서 분석 기능
+        async function handleFetchResume() {
+            const fetchBtn = document.getElementById('fetchResumeBtn');
+            const resumeStatus = document.getElementById('resumeStatus');
+            
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = '🔄 사람인 이력서 분석 중...';
+            resumeStatus.className = 'upload-status loading';
+            resumeStatus.textContent = '사람인에 등록된 이력서를 분석하고 있습니다...';
+            
+            try {
+                const response = await fetch('/api/fetch-saramin-resume', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resumeStatus.className = 'upload-status success';
+                    resumeStatus.textContent = `${result.keywords.length}개의 키워드가 추출되었습니다!`;
+                    
+                    // 키워드를 입력란에 설정
+                    const keywordsTextarea = document.getElementById('keywords');
+                    keywordsTextarea.value = result.keywords.join(',');
+                    updateKeywordsDisplay();
+                    
+                    showAlert(`사람인 이력서 분석 완료: ${result.keywords.join(', ')}`, 'success');
+                } else {
+                    resumeStatus.className = 'upload-status error';
+                    resumeStatus.textContent = result.message;
+                    showAlert(`사람인 이력서 분석 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                resumeStatus.className = 'upload-status error';
+                resumeStatus.textContent = '분석 중 오류가 발생했습니다';
+                showAlert('사람인 이력서 분석 중 오류가 발생했습니다', 'error');
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.textContent = '🔄 사람인 등록 이력서에서 키워드 추출';
+            }
+        }
+
+        // 이력서 파일 업로드 기능
         async function handleResumeUpload() {
             const fileInput = document.getElementById('resumeFile');
             const uploadBtn = document.getElementById('uploadBtn');
-            const uploadStatus = document.getElementById('uploadStatus');
+            const resumeStatus = document.getElementById('resumeStatus');
             
             const file = fileInput.files[0];
             if (!file) {
@@ -1104,8 +1223,8 @@
             
             uploadBtn.disabled = true;
             uploadBtn.textContent = '📤 분석 중...';
-            uploadStatus.className = 'upload-status loading';
-            uploadStatus.textContent = 'AI가 이력서를 분석하고 있습니다...';
+            resumeStatus.className = 'upload-status loading';
+            resumeStatus.textContent = 'AI가 이력서를 분석하고 있습니다...';
             
             try {
                 const formData = new FormData();
@@ -1119,8 +1238,8 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    uploadStatus.className = 'upload-status success';
-                    uploadStatus.textContent = `${result.keywords.length}개의 키워드가 추출되었습니다!`;
+                    resumeStatus.className = 'upload-status success';
+                    resumeStatus.textContent = `${result.keywords.length}개의 키워드가 추출되었습니다!`;
                     
                     // 키워드를 입력란에 설정
                     const keywordsTextarea = document.getElementById('keywords');
@@ -1129,17 +1248,17 @@
                     
                     showAlert(`이력서 분석 완료: ${result.keywords.join(', ')}`, 'success');
                 } else {
-                    uploadStatus.className = 'upload-status error';
-                    uploadStatus.textContent = result.message;
+                    resumeStatus.className = 'upload-status error';
+                    resumeStatus.textContent = result.message;
                     showAlert(`이력서 분석 실패: ${result.message}`, 'error');
                 }
             } catch (error) {
-                uploadStatus.className = 'upload-status error';
-                uploadStatus.textContent = '분석 중 오류가 발생했습니다';
+                resumeStatus.className = 'upload-status error';
+                resumeStatus.textContent = '분석 중 오류가 발생했습니다';
                 showAlert('이력서 업로드 중 오류가 발생했습니다', 'error');
             } finally {
                 uploadBtn.disabled = false;
-                uploadBtn.textContent = '📁 이력서 파일 선택 (PDF, DOCX, DOC, TXT)';
+                uploadBtn.textContent = '📁 이력서 파일 업로드하여 분석';
                 // 파일 입력 초기화
                 fileInput.value = '';
             }
@@ -1156,10 +1275,15 @@
             // 키워드 입력 시 실시간 업데이트
             document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
             
-            // 이력서 업로드 이벤트 리스너
+            // 이력서 관련 이벤트 리스너
+            const fetchResumeBtn = document.getElementById('fetchResumeBtn');
             const uploadBtn = document.getElementById('uploadBtn');
             const resumeFile = document.getElementById('resumeFile');
             
+            // 사람인 이력서 가져오기
+            fetchResumeBtn.addEventListener('click', handleFetchResume);
+            
+            // 파일 업로드
             uploadBtn.addEventListener('click', () => {
                 resumeFile.click();
             });

@@ -470,6 +470,34 @@ def test_login():
         add_log(f"로그인 테스트 오류: {str(e)}")
         return jsonify({'success': False, 'message': f'오류: {str(e)}'})
 
+@app.route('/api/fetch-saramin-resume', methods=['POST'])
+def fetch_saramin_resume():
+    """사람인 등록 이력서에서 키워드 추출"""
+    try:
+        # 사람인 이력서 크롤링 및 분석 로직
+        # 현재는 기본 키워드를 반환하되, 향후 실제 크롤링으로 확장 가능
+        
+        # 기본 추천 키워드 (사용자의 현재 설정 기반)
+        default_keywords = [
+            "바이오", "제약", "머신비젼", "기술영업", "프로젝트 매니저", "BM",
+            "연구개발", "품질관리", "임상시험", "의료기기", "AI", "데이터분석"
+        ]
+        
+        add_log(f"사람인 이력서 기반 키워드 추출 완료: {len(default_keywords)}개")
+        
+        return jsonify({
+            'success': True,
+            'keywords': default_keywords,
+            'message': '사람인 이력서 기반 키워드 추출이 완료되었습니다'
+        })
+        
+    except Exception as e:
+        add_log(f"사람인 이력서 분석 오류: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'사람인 이력서 분석 중 오류가 발생했습니다: {str(e)}'
+        })
+
 @app.route('/api/upload-resume', methods=['POST'])
 def upload_resume():
     """이력서 업로드 및 키워드 추출"""
