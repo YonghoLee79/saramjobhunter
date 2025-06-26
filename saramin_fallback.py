@@ -5,8 +5,9 @@ Fallback system for Saramin server issues
 """
 
 import time
-import requests
-from datetime import datetime
+import json
+import logging
+from datetime import datetime, timedelta
 from postgres_database import PostgresApplicationDatabase
 
 class SaraminServerMonitor:
@@ -14,83 +15,107 @@ class SaraminServerMonitor:
     
     def __init__(self):
         self.db = PostgresApplicationDatabase()
-        self.base_url = "https://www.saramin.co.kr"
+        self.last_check = None
+        self.consecutive_failures = 0
+        self.retry_after = None
         
     def check_server_status(self):
         """사람인 서버 상태 확인"""
         try:
-            response = requests.get(self.base_url, timeout=10)
+            import requests
+            
+            # 사람인 메인 페이지 상태 확인
+            response = requests.get("https://www.saramin.co.kr", timeout=10)
+            
             if response.status_code == 200:
-                return True, "서버 정상"
+                self.consecutive_failures = 0
+                self.last_check = datetime.now()
+                return True
             else:
-                return False, f"서버 오류: {response.status_code}"
-        except Exception as e:
-            return False, f"연결 실패: {str(e)}"
-    
+                self.consecutive_failures += 1
+                self.log_server_issue("HTTP_ERROR", f"Status code: {response.status_code}")
+                return False
+                
+        except requests.exceptions.RequestException as e:
+            self.consecutive_failures += 1
+            self.log_server_issue("CONNECTION_ERROR", str(e))
+            return False
+            
     def log_server_issue(self, issue_type, description):
         """서버 문제 로그 기록"""
-        self.db.log_system_message(
-            "WARNING", 
-            f"사람인 서버 문제: {issue_type} - {description}",
-            "saramin_fallback",
-            "log_server_issue"
-        )
-    
+        try:
+            self.db.log_system_message(
+                level="ERROR",
+                message=f"사람인 서버 문제: {issue_type} - {description}",
+                module="saramin_fallback",
+                function_name="log_server_issue"
+            )
+            
+            # 연속 실패 횟수에 따른 대기 시간 설정
+            if self.consecutive_failures >= 3:
+                hours_to_wait = min(2 ** (self.consecutive_failures - 3), 8)  # 최대 8시간
+                self.retry_after = datetime.now() + timedelta(hours=hours_to_wait)
+                
+        except Exception as e:
+            logging.error(f"로그 기록 실패: {e}")
+            
     def schedule_retry(self, hours=2):
         """재시도 스케줄링"""
-        retry_time = datetime.now().timestamp() + (hours * 3600)
-        self.db.set_configuration(
-            "next_retry_time", 
-            str(retry_time),
-            f"{hours}시간 후 자동 재시도"
-        )
-        print(f"{hours}시간 후 자동 재시도가 예약되었습니다.")
-    
+        self.retry_after = datetime.now() + timedelta(hours=hours)
+        
     def should_retry_now(self):
         """현재 재시도 가능 여부 확인"""
-        retry_time = self.db.get_configuration("next_retry_time", "0")
-        try:
-            if float(retry_time) <= datetime.now().timestamp():
-                return True
-        except:
-            pass
-        return False
-    
+        if self.retry_after is None:
+            return True
+            
+        return datetime.now() >= self.retry_after
+        
     def get_alternative_recommendations(self):
         """대안 방법 추천"""
         recommendations = [
-            "1. 사람인 웹사이트에서 직접 로그인하여 상태 확인",
-            "2. 다른 시간대(오전 9-11시, 오후 2-4시)에 재시도",
-            "3. 네트워크 연결 상태 확인",
-            "4. 사람인 공지사항에서 서버 점검 여부 확인",
-            "5. 1-2시간 후 자동 재시도 대기"
+            "하이브리드 모드 사용: 직접 로그인 후 자동 지원",
+            "몇 시간 후 다시 시도",
+            "사람인 웹사이트에서 직접 지원",
+            "다른 구직 사이트 이용 고려"
         ]
+        
         return recommendations
 
 def handle_server_failure():
     """서버 실패 상황 처리"""
+    print("🔧 사람인 서버 문제 대응 시스템")
+    print("=" * 50)
+    
     monitor = SaraminServerMonitor()
     
-    print("사람인 서버 연결 문제 감지")
-    print("=" * 40)
-    
     # 서버 상태 확인
-    is_online, status = monitor.check_server_status()
-    print(f"서버 상태: {status}")
+    print("사람인 서버 상태를 확인하는 중...")
+    server_ok = monitor.check_server_status()
     
-    # 문제 로그 기록
-    monitor.log_server_issue("로그인 실패", "내부 서버 문제 지속 발생")
+    if server_ok:
+        print("✅ 사람인 서버는 정상입니다.")
+        print("문제는 다른 원인일 수 있습니다:")
+        print("- 봇 탐지 시스템")
+        print("- 네트워크 연결")
+        print("- 로그인 정보 오류")
+    else:
+        print("❌ 사람인 서버에 문제가 있습니다.")
+        print(f"연속 실패 횟수: {monitor.consecutive_failures}")
+        
+        if monitor.retry_after:
+            print(f"다음 재시도 시간: {monitor.retry_after.strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        print("\n📋 권장 대안:")
+        for i, rec in enumerate(monitor.get_alternative_recommendations(), 1):
+            print(f"{i}. {rec}")
     
-    # 재시도 스케줄링
-    monitor.schedule_retry(2)
+    # 하이브리드 모드 안내
+    print("\n🎯 하이브리드 모드 사용법:")
+    print("1. python hybrid_automation.py 실행")
+    print("2. 브라우저에서 직접 로그인")
+    print("3. 자동 채용공고 검색 및 지원 시작")
     
-    # 대안 방법 제시
-    print("\n권장 대응 방법:")
-    for recommendation in monitor.get_alternative_recommendations():
-        print(f"  {recommendation}")
-    
-    print(f"\n다음 자동 재시도: 2시간 후")
-    print("웹 앱은 계속 실행되며, 수동으로 재시도할 수 있습니다.")
+    return server_ok
 
 if __name__ == "__main__":
     handle_server_failure()
