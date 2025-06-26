@@ -1834,13 +1834,38 @@
             }
         });
 
-        // 제니 스타일 K-pop 노래 목록 (Web Audio API 기반 톤 생성)
+        // 제니 스타일 K-pop 멜로디 패턴 (실제 음악적 패턴)
         const jennieSongs = [
-            { name: "Solo 스타일", frequency: 440, duration: 30 },
-            { name: "BLACKPINK 비트", frequency: 523, duration: 25 },
-            { name: "제니 멜로디", frequency: 659, duration: 35 },
-            { name: "K-pop 리듬", frequency: 392, duration: 28 },
-            { name: "댄스 비트", frequency: 493, duration: 32 }
+            { 
+                name: "Solo 스타일", 
+                melody: [440, 493, 523, 587, 523, 493, 440],
+                rhythm: [0.5, 0.5, 1, 0.5, 0.5, 1, 2],
+                duration: 15
+            },
+            { 
+                name: "BLACKPINK 비트", 
+                melody: [523, 587, 659, 698, 659, 587, 523, 440],
+                rhythm: [0.3, 0.3, 0.4, 0.8, 0.4, 0.3, 0.3, 1.2],
+                duration: 18
+            },
+            { 
+                name: "제니 멜로디", 
+                melody: [659, 698, 784, 880, 784, 698, 659],
+                rhythm: [0.6, 0.4, 0.8, 1.2, 0.8, 0.4, 1.6],
+                duration: 20
+            },
+            { 
+                name: "K-pop 리듬", 
+                melody: [392, 440, 493, 523, 493, 440, 392, 349],
+                rhythm: [0.4, 0.4, 0.6, 0.8, 0.6, 0.4, 0.4, 1.4],
+                duration: 16
+            },
+            { 
+                name: "댄스 비트", 
+                melody: [523, 659, 784, 659, 523, 440, 523],
+                rhythm: [0.3, 0.3, 0.6, 0.6, 0.3, 0.6, 1.3],
+                duration: 14
+            }
         ];
         
         let currentSongIndex = 0;
@@ -1850,13 +1875,23 @@
         let currentGain;
         let songTimeout;
         
-        // Web Audio API로 제니 스타일 음악 생성
+        // Web Audio API로 제니 스타일 멜로디 생성
         function createJennieMusic(songData) {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
             
-            // 기존 오실레이터 정리
+            // 기존 오실레이터들 정리
+            stopCurrentMusic();
+            
+            // 멜로디 재생
+            playMelody(songData.melody, songData.rhythm);
+            
+            return songData.duration;
+        }
+
+        // 현재 재생 중인 음악 정지
+        function stopCurrentMusic() {
             if (currentOscillator) {
                 try {
                     currentOscillator.stop();
@@ -1866,30 +1901,39 @@
             if (currentGain) {
                 currentGain.disconnect();
             }
+        }
+
+        // 멜로디 패턴 재생
+        function playMelody(melody, rhythm) {
+            let currentTime = audioContext.currentTime;
             
-            // 새로운 오실레이터와 게인 노드 생성
-            currentOscillator = audioContext.createOscillator();
-            currentGain = audioContext.createGain();
-            
-            // K-pop 스타일 사인파 설정
-            currentOscillator.type = 'sine';
-            currentOscillator.frequency.setValueAtTime(songData.frequency, audioContext.currentTime);
-            
-            // 페이드 인/아웃 효과로 부드러운 재생
-            currentGain.gain.setValueAtTime(0, audioContext.currentTime);
-            currentGain.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 1);
-            currentGain.gain.exponentialRampToValueAtTime(0.08, audioContext.currentTime + songData.duration - 2);
-            currentGain.gain.linearRampToValueAtTime(0.001, audioContext.currentTime + songData.duration);
-            
-            // 오디오 그래프 연결
-            currentOscillator.connect(currentGain);
-            currentGain.connect(audioContext.destination);
-            
-            // 재생 시작
-            currentOscillator.start();
-            currentOscillator.stop(audioContext.currentTime + songData.duration);
-            
-            return songData.duration;
+            melody.forEach((frequency, index) => {
+                const noteDuration = rhythm[index];
+                
+                // 각 음표를 위한 오실레이터와 게인 생성
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                // 더 음악적인 사각파 사용 (부드러운 음색)
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(frequency, currentTime);
+                
+                // 음표별 엔벨로프 (ADSR)
+                gainNode.gain.setValueAtTime(0, currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, currentTime + 0.05); // Attack
+                gainNode.gain.exponentialRampToValueAtTime(0.07, currentTime + noteDuration * 0.3); // Decay
+                gainNode.gain.setValueAtTime(0.05, currentTime + noteDuration * 0.7); // Sustain
+                gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + noteDuration); // Release
+                
+                // 연결 및 재생
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start(currentTime);
+                oscillator.stop(currentTime + noteDuration);
+                
+                currentTime += noteDuration;
+            });
         }
         
         // 랜덤 제니 노래 선택
@@ -1940,7 +1984,7 @@
                     // 첫 번째 곡 재생 시작
                     playNextJennieSong();
                     
-                    showAlert('제니 스타일 음악이 재생됩니다', 'success');
+                    showAlert('제니 멜로디가 재생됩니다', 'success');
                     
                 } catch (e) {
                     console.log('음악 시스템 초기화 실패:', e);
@@ -1948,16 +1992,8 @@
                 }
                 
             } else {
-                // 음악 중지
-                if (currentOscillator) {
-                    try {
-                        currentOscillator.stop();
-                        currentOscillator.disconnect();
-                    } catch (e) {}
-                }
-                if (currentGain) {
-                    currentGain.disconnect();
-                }
+                // 모든 음악 중지
+                stopCurrentMusic();
                 if (songTimeout) {
                     clearTimeout(songTimeout);
                 }
