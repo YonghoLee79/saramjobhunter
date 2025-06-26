@@ -136,7 +136,7 @@ This project is a Python-based automation bot that automatically searches and ap
     - Search keywords, location, daily limits
     - All authentication removed from interface
   - **System Status**: Maximum security production-ready system
-  - **Keywords Active**: 바이오, 생명공학, 제약, 의료기기
+  - **Keywords Active**: 바이오, 제약, 머신비젼, 기술영업, 프로젝트 매니저, BM
 
 ## Changelog
 
