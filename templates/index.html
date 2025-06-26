@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사람인 자동 지원 시스템</title>
+    
+    <!-- MZ 세대 트렌디 폰트 -->
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -12,7 +17,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
@@ -31,8 +36,15 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
             margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffffff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
         }
 
         .header p {
@@ -62,7 +74,9 @@
         .card h2 {
             color: #4f46e5;
             margin-bottom: 20px;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
             border-bottom: 2px solid #e5e7eb;
             padding-bottom: 10px;
         }
@@ -76,6 +90,8 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #374151;
+            font-size: 0.95rem;
+            letter-spacing: -0.2px;
         }
 
         .form-group input,
@@ -100,19 +116,21 @@
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-right: 10px;
             margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
         }
 
         .btn-hybrid {
