@@ -114,6 +114,17 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
+- June 26, 2025: UI Cleanup and Default Settings Update
+  - **Music Feature Removal**: Completely removed Jennie music playback functionality
+    - Deleted music toggle button from header layout
+    - Removed all Web Audio API JavaScript functions and variables
+    - Cleaned up header to simple title layout without extra buttons
+  - **Default Configuration Updates**: Updated application defaults for better user experience
+    - Changed default maximum applications per day from 10 to 100
+    - Set default keywords to "바이오,생명공학,제약,의료기기" 
+    - Radio button selection now defaults to 100 applications
+    - Updated both frontend HTML and backend configuration handling
+
 - June 26, 2025: Job Application System Critical Fixes Complete
   - **Application Button Detection Enhancement**: Comprehensive selector improvements
     - Enhanced CSS and XPath selectors for finding apply buttons

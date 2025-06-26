@@ -307,7 +307,7 @@ LOCATION={config_data.get('locations', config_data.get('location', '서울'))}
 JOB_TYPE={config_data.get('job_type', '정규직')}
 
 # 지원 설정
-MAX_APPLICATIONS_PER_DAY={config_data.get('max_applications', config_data.get('max_apps', '10'))}
+MAX_APPLICATIONS_PER_DAY={config_data.get('max_applications', config_data.get('max_apps', '100'))}
 MAX_PAGES={config_data.get('max_pages', '5')}
 MIN_WAIT_TIME={config_data.get('min_wait', '30')}
 MAX_WAIT_TIME={config_data.get('max_wait', '60')}
