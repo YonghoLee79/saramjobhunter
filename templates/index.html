@@ -661,7 +661,7 @@
             margin-top: 10px;
         }
 
-        .max-apps-checkboxes {
+        .max-apps-radio {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
             gap: 10px;
@@ -670,6 +670,33 @@
             background: #f8f9fa;
             border-radius: 8px;
             border: 1px solid #e9ecef;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            border: 1px solid #dee2e6;
+        }
+
+        .radio-item:hover {
+            background: #e3f2fd;
+            border-color: #4f46e5;
+        }
+
+        .radio-item input[type="radio"] {
+            margin: 0;
+            accent-color: #4f46e5;
+        }
+
+        .radio-item input[type="radio"]:checked + span {
+            color: #4f46e5;
+            font-weight: 600;
         }
 
         .max-apps-display {
@@ -1011,23 +1038,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="maxApps">일일 최대 지원 수 (다중 선택 가능)</label>
+                    <label for="maxApps">일일 최대 지원 수 (단일 선택)</label>
                     <div class="max-apps-selection">
-                        <div class="max-apps-checkboxes" id="maxAppsCheckboxes">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="10" checked>
+                        <div class="max-apps-radio" id="maxAppsRadio">
+                            <label class="radio-item">
+                                <input type="radio" name="maxApps" value="10" checked>
                                 <span>10개</span>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="100">
+                            <label class="radio-item">
+                                <input type="radio" name="maxApps" value="50">
+                                <span>50개</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="maxApps" value="100">
                                 <span>100개</span>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="500">
+                            <label class="radio-item">
+                                <input type="radio" name="maxApps" value="500">
                                 <span>500개</span>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="1000">
+                            <label class="radio-item">
+                                <input type="radio" name="maxApps" value="1000">
                                 <span>1000개</span>
                             </label>
                         </div>
@@ -1145,13 +1176,12 @@
 
         // 일일 최대 지원 수 표시 업데이트
         function updateMaxAppsDisplay() {
-            const checkboxes = document.querySelectorAll('input[name="maxApps"]:checked');
+            const selectedRadio = document.querySelector('input[name="maxApps"]:checked');
             const display = document.getElementById('maxAppsDisplay');
             
-            if (checkboxes.length > 0) {
-                const maxApps = Array.from(checkboxes).map(cb => parseInt(cb.value));
-                const maxValue = Math.max(...maxApps);
-                display.innerHTML = `<strong>선택된 지원 수 (${checkboxes.length}개):</strong> ${maxApps.join(', ')}개 (최대: ${maxValue}개)`;
+            if (selectedRadio) {
+                const value = parseInt(selectedRadio.value);
+                display.innerHTML = `<strong>선택된 최대 지원 수:</strong> ${value}개`;
                 display.className = 'max-apps-display';
             } else {
                 display.innerHTML = '일일 최대 지원 수를 선택해주세요';
@@ -1184,11 +1214,11 @@
                     });
                 }
                 
-                // 일일 최대 지원 수 체크박스 이벤트 리스너
-                const maxAppsCheckboxes = document.querySelectorAll('input[name="maxApps"]');
-                if (maxAppsCheckboxes.length > 0) {
-                    maxAppsCheckboxes.forEach(checkbox => {
-                        checkbox.addEventListener('change', updateMaxAppsDisplay);
+                // 일일 최대 지원 수 라디오 버튼 이벤트 리스너
+                const maxAppsRadios = document.querySelectorAll('input[name="maxApps"]');
+                if (maxAppsRadios.length > 0) {
+                    maxAppsRadios.forEach(radio => {
+                        radio.addEventListener('change', updateMaxAppsDisplay);
                     });
                 }
             } catch (error) {
@@ -1392,7 +1422,7 @@
             const webBtn = document.getElementById('webBtn');
             const keywords = document.getElementById('keywords').value;
             const selectedLocations = Array.from(document.querySelectorAll('input[name="locations"]:checked')).map(cb => cb.value);
-            const selectedMaxApps = Array.from(document.querySelectorAll('input[name="maxApps"]:checked')).map(cb => parseInt(cb.value));
+            const selectedMaxAppsRadio = document.querySelector('input[name="maxApps"]:checked');
             
             if (!keywords.trim()) {
                 showAlert('검색 키워드를 입력해주세요', 'error');
@@ -1404,7 +1434,7 @@
                 return;
             }
 
-            if (selectedMaxApps.length === 0) {
+            if (!selectedMaxAppsRadio) {
                 showAlert('일일 최대 지원 수를 선택해주세요', 'error');
                 return;
             }
@@ -1421,7 +1451,7 @@
                     body: JSON.stringify({
                         keywords: keywords,
                         locations: selectedLocations,
-                        max_applications: Math.max(...selectedMaxApps)
+                        max_applications: parseInt(selectedMaxAppsRadio.value)
                     })
                 });
 
