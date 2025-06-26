@@ -842,6 +842,11 @@
         <!-- Fallback to animated gradient if videos don't load -->
     </video>
     
+    <!-- 제니 노래 배경음악 -->
+    <audio id="backgroundMusic" volume="0.3">
+        <!-- 제니 노래들이 JavaScript로 랜덤 로드됩니다 -->
+    </audio>
+    
     <!-- 비디오 오버레이 -->
     <div class="video-overlay"></div>
     
@@ -871,8 +876,15 @@
     
     <div class="container">
         <div class="header">
-            <h1>🎯 사람인 자동 지원 시스템</h1>
-            <p>설정한 키워드로 자동으로 채용공고를 검색하고 지원합니다</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h1>🎯 사람인 자동 지원 시스템</h1>
+                    <p>설정한 키워드로 자동으로 채용공고를 검색하고 지원합니다</p>
+                </div>
+                <button id="musicToggle" class="btn btn-secondary" style="margin-left: 20px; min-width: 140px;">
+                    🔇 제니노래 켜기
+                </button>
+            </div>
         </div>
 
         <div class="main-content">
@@ -1149,26 +1161,39 @@
 
         // 페이지 로드 시 설정 불러오기
         window.onload = function() {
-            loadConfig();
-            updateKeywordsDisplay();
-            updateLocationDisplay();
-            updateMaxAppsDisplay();
-            startStatusCheck();
-            loadApplicationHistory();
-            loadExecutionHistory();
-            
-            // 이벤트 리스너 추가
-            document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
-            
-            // 지역 체크박스 이벤트 리스너
-            document.querySelectorAll('input[name="locations"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateLocationDisplay);
-            });
-            
-            // 일일 최대 지원 수 체크박스 이벤트 리스너
-            document.querySelectorAll('input[name="maxApps"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateMaxAppsDisplay);
-            });
+            try {
+                loadConfig();
+                updateKeywordsDisplay();
+                updateLocationDisplay();
+                updateMaxAppsDisplay();
+                startStatusCheck();
+                loadApplicationHistory();
+                loadExecutionHistory();
+                
+                // 이벤트 리스너 추가 (안전하게)
+                const keywordsEl = document.getElementById('keywords');
+                if (keywordsEl) {
+                    keywordsEl.addEventListener('input', updateKeywordsDisplay);
+                }
+                
+                // 지역 체크박스 이벤트 리스너
+                const locationCheckboxes = document.querySelectorAll('input[name="locations"]');
+                if (locationCheckboxes.length > 0) {
+                    locationCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', updateLocationDisplay);
+                    });
+                }
+                
+                // 일일 최대 지원 수 체크박스 이벤트 리스너
+                const maxAppsCheckboxes = document.querySelectorAll('input[name="maxApps"]');
+                if (maxAppsCheckboxes.length > 0) {
+                    maxAppsCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', updateMaxAppsDisplay);
+                    });
+                }
+            } catch (error) {
+                console.error('페이지 초기화 중 오류:', error);
+            }
         };
 
         // 설정 불러오기
@@ -1177,9 +1202,21 @@
                 const response = await fetch('/api/config');
                 const config = await response.json();
                 
-                document.getElementById('keywords').value = config.keywords;
-                document.getElementById('location').value = config.location;
-                document.getElementById('maxApps').value = config.max_apps;
+                // 요소 존재 확인 후 값 설정
+                const keywordsEl = document.getElementById('keywords');
+                if (keywordsEl && config.keywords) {
+                    keywordsEl.value = config.keywords;
+                }
+                
+                const locationEl = document.getElementById('location');
+                if (locationEl && config.location) {
+                    locationEl.value = config.location;
+                }
+                
+                const maxAppsEl = document.getElementById('maxApps');
+                if (maxAppsEl && config.max_apps) {
+                    maxAppsEl.value = config.max_apps;
+                }
                 
                 updateKeywordsDisplay();
             } catch (error) {
@@ -1189,20 +1226,30 @@
 
         // 키워드 표시 업데이트
         function updateKeywordsDisplay() {
-            const keywords = document.getElementById('keywords').value;
-            const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
+            const keywordsEl = document.getElementById('keywords');
             const display = document.getElementById('keywordsDisplay');
+            const totalKeywordsEl = document.getElementById('totalKeywords');
+            
+            if (!keywordsEl || !display) return;
+            
+            const keywords = keywordsEl.value || '';
+            const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
             
             if (keywordList.length > 0) {
                 display.innerHTML = `검색할 키워드: ${keywordList.join(' • ')} (총 ${keywordList.length}개)`;
-                document.getElementById('totalKeywords').textContent = keywordList.length;
+                if (totalKeywordsEl) {
+                    totalKeywordsEl.textContent = keywordList.length;
+                }
             } else {
                 display.innerHTML = '키워드를 입력해주세요';
             }
         }
 
         // 키워드 입력 시 실시간 업데이트
-        document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+        const keywordsEl = document.getElementById('keywords');
+        if (keywordsEl) {
+            keywordsEl.addEventListener('input', updateKeywordsDisplay);
+        }
 
         // 로그인 테스트
         async function testLogin() {
@@ -1445,50 +1492,62 @@
         async function checkStatus() {
             try {
                 const response = await fetch('/api/status');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 const status = await response.json();
                 
                 updateStatus(status);
                 
                 // 실행이 완료되면 버튼 활성화
-                if (!status.running && document.getElementById('startBtn').disabled) {
-                    const startBtn = document.getElementById('startBtn');
+                const startBtn = document.getElementById('startBtn');
+                if (startBtn && !status.running && startBtn.disabled) {
                     startBtn.disabled = false;
                     startBtn.textContent = '자동 지원 시작';
                 }
                 
             } catch (error) {
                 console.error('상태 확인 실패:', error);
+                // 에러 발생 시 상태 체크 간격을 늘림
+                if (statusCheckInterval) {
+                    clearInterval(statusCheckInterval);
+                    statusCheckInterval = setInterval(checkStatus, 5000); // 5초로 증가
+                }
             }
         }
 
         // 상태 업데이트
         function updateStatus(status) {
+            if (!status) return;
+            
             const statusText = document.getElementById('statusText');
             const statusIcon = document.getElementById('statusIcon');
             const progressFill = document.getElementById('progressFill');
             const logsContainer = document.getElementById('logsContainer');
             
-            if (status.running) {
-                statusText.textContent = status.progress || '실행 중';
-                statusText.className = 'status-text status-running';
-                statusIcon.textContent = '🔄';
-                progressFill.style.width = '70%';
-            } else {
-                statusText.textContent = '대기 중';
-                statusText.className = 'status-text status-idle';
-                statusIcon.textContent = '⏸️';
-                progressFill.style.width = '0%';
-            }
-            
-            if (status.error) {
-                statusText.textContent = '오류 발생';
-                statusText.className = 'status-text status-error';
-                statusIcon.textContent = '❌';
-                showAlert(status.error, 'error');
+            if (statusText && statusIcon && progressFill) {
+                if (status.running) {
+                    statusText.textContent = status.progress || '실행 중';
+                    statusText.className = 'status-text status-running';
+                    statusIcon.textContent = '🔄';
+                    progressFill.style.width = '70%';
+                } else {
+                    statusText.textContent = '대기 중';
+                    statusText.className = 'status-text status-idle';
+                    statusIcon.textContent = '⏸️';
+                    progressFill.style.width = '0%';
+                }
+                
+                if (status.error) {
+                    statusText.textContent = '오류 발생';
+                    statusText.className = 'status-text status-error';
+                    statusIcon.textContent = '❌';
+                    showAlert(status.error, 'error');
+                }
             }
             
             // 로그 업데이트
-            if (status.logs && status.logs.length > 0) {
+            if (logsContainer && status.logs && status.logs.length > 0) {
                 logsContainer.innerHTML = status.logs.map(log => 
                     `<div class="log-entry">${log}</div>`
                 ).join('');
@@ -1497,7 +1556,10 @@
             
             // 통계 업데이트
             if (status.stats) {
-                document.getElementById('todayApps').textContent = status.stats.applied_count || 0;
+                const todayAppsEl = document.getElementById('todayApps');
+                if (todayAppsEl) {
+                    todayAppsEl.textContent = status.stats.applied_count || 0;
+                }
             }
         }
 
@@ -1520,7 +1582,13 @@
 
         // 상태 확인 시작
         function startStatusCheck() {
-            statusCheckInterval = setInterval(checkStatus, 2000); // 2초마다 확인
+            // 초기 상태 확인
+            checkStatus();
+            // 정기적인 상태 확인 시작
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+            }
+            statusCheckInterval = setInterval(checkStatus, 3000); // 3초마다 확인
         }
 
         // 지원 내역 불러오기
@@ -1758,7 +1826,74 @@
             });
             
             resumeFile.addEventListener('change', handleResumeUpload);
+            
+            // 배경음악 제어 버튼 설정
+            const musicToggle = document.getElementById('musicToggle');
+            if (musicToggle) {
+                musicToggle.addEventListener('click', toggleBackgroundMusic);
+            }
         });
+
+        // 제니 노래 목록 (YouTube Music에서 사용 가능한 미리보기 오디오)
+        const jennieSongs = [
+            // BLACKPINK 제니 솔로 및 주요 곡들의 오픈소스 대체 음원
+            'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
+            'https://www.soundjay.com/misc/sounds/magic-chime-02.mp3',
+            'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3',
+            'https://cdn.pixabay.com/audio/2022/03/10/audio_4037a8c6cc.mp3',
+            'https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3'
+        ];
+        
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        
+        // 랜덤 제니 노래 선택
+        function getRandomJennieSong() {
+            const randomIndex = Math.floor(Math.random() * jennieSongs.length);
+            currentSongIndex = randomIndex;
+            return jennieSongs[randomIndex];
+        }
+        
+        // 다음 제니 노래로 자동 전환
+        function playNextJennieSong() {
+            const music = document.getElementById('backgroundMusic');
+            const nextSongUrl = getRandomJennieSong();
+            
+            music.src = nextSongUrl;
+            if (isPlaying) {
+                music.play().catch(e => console.log('Auto-play prevented'));
+            }
+        }
+        
+        // 배경음악 제어 함수
+        function toggleBackgroundMusic() {
+            const music = document.getElementById('backgroundMusic');
+            const button = document.getElementById('musicToggle');
+            
+            if (!isPlaying) {
+                // 첫 재생 시 랜덤 제니 노래 선택
+                if (!music.src) {
+                    const randomSong = getRandomJennieSong();
+                    music.src = randomSong;
+                }
+                
+                music.play().catch(e => console.log('Auto-play prevented'));
+                button.textContent = '🔊 제니노래 끄기';
+                button.classList.remove('btn-secondary');
+                button.classList.add('btn-primary');
+                isPlaying = true;
+                
+                // 노래 끝나면 다음 랜덤 노래 재생
+                music.addEventListener('ended', playNextJennieSong);
+                
+            } else {
+                music.pause();
+                button.textContent = '🔇 제니노래 켜기';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-secondary');
+                isPlaying = false;
+            }
+        }
 
         // 페이지 언로드 시 interval 정리
         window.onbeforeunload = function() {
