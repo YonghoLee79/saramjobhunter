@@ -361,15 +361,24 @@ def index():
 def get_config():
     """현재 설정 조회"""
     try:
-        config = Config()
+        # PostgreSQL에서 저장된 설정값 직접 조회
+        from postgres_database import PostgresApplicationDatabase
+        db = PostgresApplicationDatabase()
+        
+        # 데이터베이스에서 마지막 사용 설정 조회
+        keywords = db.get_last_used_keywords() or '바이오,생명공학,제약,의료기기'
+        location = db.get_last_used_location() or '서울'
+        max_apps = db.get_last_used_max_applications() or 100
+        
         return jsonify({
-            'keywords': ','.join(config.keyword_list),
-            'location': config.location,
-            'job_type': config.job_type,
-            'max_apps': config.max_applications_per_day,
-            'max_pages': config.max_pages
+            'keywords': keywords,
+            'location': location,
+            'job_type': '정규직',
+            'max_apps': max_apps,
+            'max_pages': 5
         })
-    except:
+    except Exception as e:
+        # 오류 발생 시 기본값 반환
         return jsonify({
             'keywords': '바이오,생명공학,제약,의료기기',
             'location': '서울',

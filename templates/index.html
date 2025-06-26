@@ -1616,6 +1616,28 @@
             }
         }
 
+        // 폼 데이터 수집
+        function getFormData() {
+            const keywords = document.getElementById('keywords').value;
+            
+            // 선택된 지역들 수집
+            const selectedLocations = [];
+            document.querySelectorAll('input[name="locations"]:checked').forEach(checkbox => {
+                selectedLocations.push(checkbox.value);
+            });
+            
+            // 선택된 최대 지원수 수집
+            const selectedMaxApps = document.querySelector('input[name="maxApps"]:checked');
+            const maxApps = selectedMaxApps ? selectedMaxApps.value : '100';
+            
+            return {
+                keywords: keywords,
+                location: selectedLocations.join(',') || '서울',
+                max_applications: maxApps,
+                job_type: '정규직'
+            };
+        }
+
         // 설정 자동 저장
         async function autoSaveSettings() {
             try {
