@@ -100,6 +100,66 @@ def run_bot_background(config_data):
     finally:
         app_state['running'] = False
 
+def run_hybrid_bot_background(config_data):
+    """하이브리드 모드 봇 실행"""
+    global app_state
+    
+    try:
+        app_state['running'] = True
+        app_state['progress'] = "하이브리드 모드 초기화..."
+        app_state['error'] = None
+        
+        add_log("하이브리드 모드 시작")
+        
+        # hybrid_automation.py를 subprocess로 실행
+        import subprocess
+        import os
+        
+        app_state['progress'] = "브라우저 열고 있습니다..."
+        add_log("브라우저가 열립니다. saramin.co.kr에서 직접 로그인해주세요.")
+        
+        # 환경 변수 설정
+        env = os.environ.copy()
+        env['HEADLESS'] = 'false'  # GUI 모드로 실행
+        
+        # hybrid_automation.py 실행
+        process = subprocess.Popen(
+            ['python', 'hybrid_automation.py'],
+            cwd='/home/runner/workspace',
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        app_state['progress'] = "수동 로그인 대기 중..."
+        add_log("열린 브라우저에서 로그인을 완료해주세요.")
+        
+        # 프로세스 완료 대기 (타임아웃 30분)
+        try:
+            stdout, stderr = process.communicate(timeout=1800)
+            
+            if process.returncode == 0:
+                app_state['progress'] = "하이브리드 모드 완료"
+                add_log("하이브리드 자동화가 성공적으로 완료되었습니다.")
+                if stdout:
+                    add_log(f"실행 결과: {stdout}")
+            else:
+                app_state['error'] = f"하이브리드 모드 실행 실패"
+                add_log(f"오류: {stderr}")
+                
+        except subprocess.TimeoutExpired:
+            process.kill()
+            app_state['error'] = "하이브리드 모드 타임아웃 (30분)"
+            add_log("실행 시간이 초과되었습니다.")
+        
+    except Exception as e:
+        app_state['error'] = f"하이브리드 모드 오류: {str(e)}"
+        add_log(f"하이브리드 모드 실행 중 오류: {str(e)}")
+        
+    finally:
+        app_state['running'] = False
+
 def add_log(message):
     """로그 추가"""
     timestamp = datetime.now().strftime('%H:%M:%S')
@@ -160,7 +220,7 @@ def get_config():
 
 @app.route('/api/start', methods=['POST'])
 def start_bot():
-    """봇 시작"""
+    """봇 시작 (기본 모드)"""
     if app_state['running']:
         return jsonify({'success': False, 'message': '이미 실행 중입니다'})
     
@@ -176,6 +236,32 @@ def start_bot():
     thread.start()
     
     return jsonify({'success': True, 'message': '자동 지원을 시작합니다'})
+
+@app.route('/api/start-hybrid', methods=['POST'])
+def start_hybrid_bot():
+    """하이브리드 모드 봇 시작"""
+    if app_state['running']:
+        return jsonify({'success': False, 'message': '이미 실행 중입니다'})
+    
+    config_data = request.json or {}
+    
+    # 하이브리드 모드 안내
+    app_state['logs'].append("하이브리드 모드 시작: 브라우저에서 직접 로그인해주세요")
+    
+    # 하이브리드 봇 실행
+    thread = threading.Thread(target=run_hybrid_bot_background, args=(config_data,))
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({
+        'success': True, 
+        'message': '하이브리드 모드 시작됨',
+        'instructions': [
+            '1. 열린 브라우저에서 saramin.co.kr에 직접 로그인하세요',
+            '2. 로그인 완료 후 자동으로 채용공고 검색이 시작됩니다',
+            '3. 웹 앱에서 실시간 진행상황을 확인할 수 있습니다'
+        ]
+    })
 
 @app.route('/api/status', methods=['GET'])
 def get_status():
