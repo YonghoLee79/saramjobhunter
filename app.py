@@ -213,32 +213,53 @@ def get_history():
 
 @app.route('/api/test-login', methods=['POST'])
 def test_login():
-    """로그인 테스트"""
+    """고급 봇 탐지 우회 로그인 테스트"""
     config_data = request.json
     
     if not config_data.get('username') or not config_data.get('password'):
         return jsonify({'success': False, 'message': '로그인 정보를 입력해주세요'})
     
     try:
+        add_log("고급 봇 탐지 우회 로그인 테스트 시작...")
+        add_log(f"사용자: {config_data.get('username')}")
+        
         # 임시 설정 업데이트
         update_config(config_data)
         
-        # 로그인 테스트
+        # 고급 봇 탐지 우회 시스템 적용
         config = Config()
         db = PostgresApplicationDatabase()
         logger = setup_logger()
         
         bot = SaraminBot(config, db, logger)
         
-        success = bot.login()
-        bot.close()
-        
-        if success:
-            return jsonify({'success': True, 'message': '로그인 성공'})
+        if bot.setup_driver():
+            add_log("스텔스 브라우저 설정 완료")
+            add_log("- 봇 탐지 우회 스크립트 적용됨")
+            add_log("- 사람처럼 보이는 User-Agent 설정됨")
+            
+            try:
+                add_log("사람인 로그인 시도 중...")
+                success = bot.login()
+                
+                if success:
+                    add_log("로그인 성공! 봇 탐지 우회 효과적")
+                    bot.close()
+                    return jsonify({'success': True, 'message': '로그인 테스트 성공 - 봇 탐지 우회 시스템 작동'})
+                else:
+                    add_log("로그인 실패 - 사람인 서버 문제 또는 추가 우회 필요")
+                    bot.close()
+                    return jsonify({'success': False, 'message': '로그인 실패 - 사람인 서버 상태 확인 필요'})
+            except Exception as e:
+                add_log(f"로그인 테스트 오류: {str(e)}")
+                bot.close()
+                return jsonify({'success': False, 'message': f'로그인 오류: {str(e)}'})
         else:
-            return jsonify({'success': False, 'message': '로그인 실패'})
+            add_log("브라우저 설정 실패")
+            return jsonify({'success': False, 'message': '브라우저 설정 실패'})
             
     except Exception as e:
+        add_log(f"로그인 테스트 오류: {str(e)}")
         return jsonify({'success': False, 'message': f'오류: {str(e)}'})
 
 if __name__ == '__main__':
