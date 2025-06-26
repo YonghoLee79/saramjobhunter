@@ -18,11 +18,13 @@ This project is a Python-based automation bot that automatically searches and ap
 - **Error Handling**: Comprehensive exception handling with retry mechanisms
 
 ### Data Storage Solutions
-- **Primary Database**: SQLite database for application tracking
+- **Primary Database**: PostgreSQL database for robust application tracking
 - **Tables**:
-  - `applications`: Job application records with job IDs, URLs, company info
-  - `execution_log`: Daily execution tracking to prevent duplicate runs
-- **File-based Storage**: Local SQLite file (`applications.db`)
+  - `job_applications`: Job application records with job IDs, URLs, company info, keywords
+  - `execution_logs`: Daily execution tracking with keyword logging to prevent duplicate runs
+  - `user_configurations`: User settings and preferences storage
+  - `system_logs`: Comprehensive system logging with levels and timestamps
+- **Cloud Storage**: PostgreSQL hosted database with connection pooling
 
 ### Authentication and Authorization
 - **Saramin Login**: Automated login using stored credentials

@@ -13,7 +13,7 @@ from datetime import datetime
 import json
 
 from config import Config
-from database import ApplicationDatabase
+from postgres_database import PostgresApplicationDatabase
 from logger_config import setup_logger
 from saramin_bot import SaraminBot
 
@@ -46,8 +46,7 @@ def run_bot_background(config_data):
         logger = setup_logger("saramin_bot.log", "INFO")
         
         # 데이터베이스 초기화
-        db = ApplicationDatabase()
-        db.init_database()
+        db = PostgresApplicationDatabase()
         
         # 당일 실행 확인
         today = datetime.now().strftime('%Y-%m-%d')
@@ -193,7 +192,7 @@ def get_status():
 def get_history():
     """지원 이력 조회"""
     try:
-        db = ApplicationDatabase()
+        db = PostgresApplicationDatabase()
         
         # 최근 지원 이력
         applications = db.get_application_history(days=30)
@@ -226,7 +225,7 @@ def test_login():
         
         # 로그인 테스트
         config = Config()
-        db = ApplicationDatabase()
+        db = PostgresApplicationDatabase()
         logger = setup_logger()
         
         bot = SaraminBot(config, db, logger)

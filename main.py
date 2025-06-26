@@ -11,7 +11,7 @@ from datetime import datetime
 from saramin_bot import SaraminBot
 from config import Config
 from logger_config import setup_logger
-from database import ApplicationDatabase
+from postgres_database import PostgresApplicationDatabase
 
 def main():
     """메인 실행 함수"""
@@ -27,10 +27,10 @@ def main():
         config = Config()
         
         # 데이터베이스 초기화
-        db = ApplicationDatabase()
+        db = PostgresApplicationDatabase()
         
         # 당일 실행 여부 확인
-        today = datetime.now().date()
+        today = datetime.now().strftime('%Y-%m-%d')
         if db.is_executed_today(today):
             logger.info("오늘 이미 스크립트가 실행되었습니다. 내일 다시 시도해주세요.")
             return
