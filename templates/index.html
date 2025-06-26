@@ -85,16 +85,52 @@
             }
         }
 
-        /* Italian Brainrot 밈 요소들 */
-        .italian-meme {
+        /* Italian Brainrot 밈 이미지들 */
+        .italian-meme-img {
             position: fixed;
-            font-size: 2rem;
+            width: 80px;
+            height: 80px;
             z-index: -1;
             animation: floatMeme 8s ease-in-out infinite;
-            opacity: 0.3;
+            opacity: 0.4;
             pointer-events: none;
-            font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans KR', sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .italian-gesture {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ff6b6b"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🤌</text></svg>');
+        }
+
+        .italian-food {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234ecdc4"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🍝</text></svg>');
+        }
+
+        .italian-flag {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2345b7d1"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🇮🇹</text></svg>');
+        }
+
+        .italian-pizza {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ffa726"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🍕</text></svg>');
+        }
+
+        .italian-rome {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ab47bc"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🏛️</text></svg>');
+        }
+
+        .italian-wine {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e91e63"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🍷</text></svg>');
+        }
+
+        .italian-vespa {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2300acc1"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🛵</text></svg>');
+        }
+
+        .italian-opera {
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23795548"/><text x="50" y="60" font-size="40" text-anchor="middle" fill="white">🎭</text></svg>');
         }
 
         .meme-1 {
@@ -809,21 +845,29 @@
     <!-- 비디오 오버레이 -->
     <div class="video-overlay"></div>
     
-    <!-- Italian Brainrot 밈 요소들 -->
-    <div class="italian-meme meme-1">🤌 Mamma mia!</div>
-    <div class="italian-meme meme-2">🍝 Spaghetti!</div>
-    <div class="italian-meme meme-3">🇮🇹 Bene!</div>
-    <div class="italian-meme meme-4">🤌 Che cosa?!</div>
-    <div class="italian-meme meme-5">🍕 Pizza time!</div>
-    <div class="italian-meme meme-6">🤌 Perfetto!</div>
+    <!-- Italian Brainrot 밈 이미지들 -->
+    <div class="italian-meme-img italian-gesture meme-1"></div>
+    <div class="italian-meme-img italian-food meme-2"></div>
+    <div class="italian-meme-img italian-flag meme-3"></div>
+    <div class="italian-meme-img italian-gesture meme-4"></div>
+    <div class="italian-meme-img italian-pizza meme-5"></div>
+    <div class="italian-meme-img italian-gesture meme-6"></div>
     
-    <!-- 추가 Italian 밈들 -->
-    <div class="italian-meme" style="top: 35%; left: 80%; animation-delay: 6s; animation-duration: 7s;">🤌 Madonna!</div>
-    <div class="italian-meme" style="bottom: 50%; right: 20%; animation-delay: 7s; animation-duration: 6s;">🇮🇹 Ciao bella!</div>
-    <div class="italian-meme" style="top: 70%; left: 60%; animation-delay: 8s; animation-duration: 8s;">🍝 Carbonara!</div>
-    <div class="italian-meme" style="bottom: 80%; right: 50%; animation-delay: 9s; animation-duration: 5s;">🤌 Basta!</div>
-    <div class="italian-meme" style="top: 25%; left: 40%; animation-delay: 10s; animation-duration: 9s;">🏛️ Roma!</div>
-    <div class="italian-meme" style="bottom: 40%; left: 70%; animation-delay: 11s; animation-duration: 7s;">🤌 Fantastico!</div>
+    <!-- 추가 Italian 밈 이미지들 -->
+    <div class="italian-meme-img italian-gesture" style="top: 35%; left: 80%; animation-delay: 6s; animation-duration: 7s;"></div>
+    <div class="italian-meme-img italian-flag" style="bottom: 50%; right: 20%; animation-delay: 7s; animation-duration: 6s;"></div>
+    <div class="italian-meme-img italian-food" style="top: 70%; left: 60%; animation-delay: 8s; animation-duration: 8s;"></div>
+    <div class="italian-meme-img italian-gesture" style="bottom: 80%; right: 50%; animation-delay: 9s; animation-duration: 5s;"></div>
+    <div class="italian-meme-img italian-rome" style="top: 25%; left: 40%; animation-delay: 10s; animation-duration: 9s;"></div>
+    <div class="italian-meme-img italian-gesture" style="bottom: 40%; left: 70%; animation-delay: 11s; animation-duration: 7s;"></div>
+    
+    <!-- 더 많은 Italian 밈 이미지들 -->
+    <div class="italian-meme-img italian-wine" style="top: 15%; right: 5%; animation-delay: 12s; animation-duration: 6s;"></div>
+    <div class="italian-meme-img italian-vespa" style="bottom: 20%; left: 10%; animation-delay: 13s; animation-duration: 8s;"></div>
+    <div class="italian-meme-img italian-opera" style="top: 85%; right: 30%; animation-delay: 14s; animation-duration: 7s;"></div>
+    <div class="italian-meme-img italian-pizza" style="top: 45%; left: 85%; animation-delay: 15s; animation-duration: 5s;"></div>
+    <div class="italian-meme-img italian-wine" style="bottom: 60%; right: 15%; animation-delay: 16s; animation-duration: 9s;"></div>
+    <div class="italian-meme-img italian-vespa" style="top: 55%; left: 5%; animation-delay: 17s; animation-duration: 6s;"></div>
     
     <div class="container">
         <div class="header">
