@@ -114,21 +114,25 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
-- June 26, 2025: Final UI streamlining and interface optimization
+- June 26, 2025: Complete system finalization with security optimization
   - **Interface Cleanup**: Removed redundant buttons for cleaner user experience
     - Deleted "로그인 테스트" button - no longer needed
     - Deleted "자동 지원 시작" button - simplified workflow
-  - **Final Button Configuration**: Four essential buttons only
-    - "사람인 로그인" (purple) - Opens new tab for manual login
-    - "하이브리드 모드 시작" (green) - Manual login + automated application
-    - "웹 자동화 실행" (blue) - Execute automation after login
+  - **Sequential Button Layout**: Numbered buttons in usage order
+    - "1. 사람인 로그인" (purple) - Opens new tab for manual login
+    - "2. 웹 자동화 실행" (blue) - Execute automation after login
+    - "하이브리드 모드" (green) - Alternative integrated approach
     - "자동화 중단" (red) - Stop any running automation
-  - **Updated Usage Instructions**: Simplified to two main methods
-    - Recommended workflow: Login via new tab → Execute web automation
+  - **Security Enhancement**: Removed stored credentials from configuration
+    - Eliminated SARAMIN_USERNAME and SARAMIN_PASSWORD from .env
+    - Enforced manual login requirement for all operations
+    - Added security notes in configuration file
+  - **Updated Usage Instructions**: Clear sequential workflow
+    - Primary method: Step 1 (Login) → Step 2 (Execute automation)
     - Alternative: Hybrid mode for integrated experience
   - **Database Status**: Fully reset and ready for fresh start
-  - **System Status**: Production-ready with optimized user workflow
-  - **Keywords Active**: 바이오, 제약, 기술영업, PM, 프로젝트 매니저
+  - **System Status**: Production-ready with secure manual login workflow
+  - **Keywords Active**: 바이오, 생명공학, 제약, 의료기기
 
 ## Changelog
 
