@@ -350,5 +350,6 @@ def test_login():
 
 if __name__ == '__main__':
     print("사람인 자동 지원 웹 앱을 시작합니다...")
-    print("브라우저에서 http://0.0.0.0:5000 에 접속하세요")
+    print("Replit 우상단의 'Open in new tab' 버튼을 클릭하거나")
+    print("브라우저에서 접속 URL을 확인하세요")
     app.run(host='0.0.0.0', port=5000, debug=True)
