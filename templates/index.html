@@ -115,6 +115,14 @@
             box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
         }
 
+        .btn-hybrid {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .btn-hybrid:hover {
+            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+        }
+
         .btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
@@ -389,6 +397,7 @@
 
                 <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
                 <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
+                <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
             </div>
 
             <!-- 상태 카드 -->
@@ -595,6 +604,50 @@
                 showAlert('시작 중 오류가 발생했습니다', 'error');
                 startBtn.disabled = false;
                 startBtn.textContent = '자동 지원 시작';
+            }
+        }
+
+        // 하이브리드 모드 시작
+        async function startHybridBot() {
+            const hybridBtn = document.getElementById('hybridBtn');
+            const keywords = document.getElementById('keywords').value;
+            const location = document.getElementById('location').value;
+            const maxApps = document.getElementById('maxApps').value;
+            
+            if (!keywords.trim()) {
+                showAlert('검색 키워드를 입력해주세요', 'error');
+                return;
+            }
+
+            hybridBtn.disabled = true;
+            hybridBtn.textContent = '시작 중...';
+
+            try {
+                const response = await fetch('/api/start-hybrid', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        keywords: keywords,
+                        location: location,
+                        max_applications: parseInt(maxApps) || 10
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('하이브리드 모드가 시작되었습니다. 브라우저에서 직접 로그인하세요.', 'success');
+                    startStatusCheck();
+                } else {
+                    showAlert(`하이브리드 모드 시작 실패: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('하이브리드 모드 시작 중 오류가 발생했습니다', 'error');
+            } finally {
+                hybridBtn.disabled = false;
+                hybridBtn.textContent = '🔄 하이브리드 모드 시작';
             }
         }
 
