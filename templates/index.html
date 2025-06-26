@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사람인 자동 지원 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #4f46e5;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+        }
+
+        .status-card {
+            grid-column: 1 / -1;
+        }
+
+        .status-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .status-running {
+            color: #059669;
+        }
+
+        .status-idle {
+            color: #6b7280;
+        }
+
+        .status-error {
+            color: #dc2626;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            transition: width 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .logs-container {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .keywords-display {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 사람인 자동 지원 시스템</h1>
+            <p>설정한 키워드로 자동으로 채용공고를 검색하고 지원합니다</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 설정 카드 -->
+            <div class="card">
+                <h2>⚙️ 지원 설정</h2>
+                
+                <div class="form-group">
+                    <label for="username">사람인 아이디</label>
+                    <input type="text" id="username" placeholder="사람인 로그인 아이디">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">사람인 비밀번호</label>
+                    <input type="password" id="password" placeholder="사람인 로그인 비밀번호">
+                </div>
+
+                <div class="form-group">
+                    <label for="keywords">검색 키워드 (쉼표로 구분)</label>
+                    <textarea id="keywords" rows="3" placeholder="바이오,제약,기술영업,PM,설비,머신비젼,프로젝트 매니저"></textarea>
+                    <div class="keywords-display" id="keywordsDisplay"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">지역</label>
+                    <select id="location">
+                        <option value="서울">서울</option>
+                        <option value="경기">경기</option>
+                        <option value="인천">인천</option>
+                        <option value="부산">부산</option>
+                        <option value="대구">대구</option>
+                        <option value="광주">광주</option>
+                        <option value="대전">대전</option>
+                        <option value="울산">울산</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxApps">일일 최대 지원 수</label>
+                    <input type="number" id="maxApps" value="10" min="1" max="50">
+                </div>
+
+                <button class="btn" onclick="testLogin()" id="testBtn">로그인 테스트</button>
+                <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
+            </div>
+
+            <!-- 상태 카드 -->
+            <div class="card">
+                <h2>📊 현재 상태</h2>
+                
+                <div class="status-display">
+                    <span class="status-text" id="statusText">대기 중</span>
+                    <span id="statusIcon">⏸️</span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <h3 style="margin-bottom: 10px;">📝 실행 로그</h3>
+                <div class="logs-container" id="logsContainer">
+                    <div class="log-entry">시스템 준비 완료</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="card status-card">
+            <h2>📈 지원 현황</h2>
+            <div class="stats-grid" id="statsContainer">
+                <div class="stat-item">
+                    <div class="stat-number" id="todayApps">0</div>
+                    <div class="stat-label">오늘 지원</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalApps">0</div>
+                    <div class="stat-label">총 지원</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalKeywords">7</div>
+                    <div class="stat-label">검색 키워드</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="successRate">0%</div>
+                    <div class="stat-label">성공률</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let statusCheckInterval;
+        
+        // 페이지 로드 시 설정 불러오기
+        window.onload = function() {
+            loadConfig();
+            updateKeywordsDisplay();
+            startStatusCheck();
+        };
+
+        // 설정 불러오기
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                
+                document.getElementById('keywords').value = config.keywords;
+                document.getElementById('location').value = config.location;
+                document.getElementById('maxApps').value = config.max_apps;
+                
+                updateKeywordsDisplay();
+            } catch (error) {
+                console.error('설정 로드 실패:', error);
+            }
+        }
+
+        // 키워드 표시 업데이트
+        function updateKeywordsDisplay() {
+            const keywords = document.getElementById('keywords').value;
+            const keywordList = keywords.split(',').map(k => k.trim()).filter(k => k);
+            const display = document.getElementById('keywordsDisplay');
+            
+            if (keywordList.length > 0) {
+                display.innerHTML = `검색할 키워드: ${keywordList.join(' • ')} (총 ${keywordList.length}개)`;
+                document.getElementById('totalKeywords').textContent = keywordList.length;
+            } else {
+                display.innerHTML = '키워드를 입력해주세요';
+            }
+        }
+
+        // 키워드 입력 시 실시간 업데이트
+        document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+
+        // 로그인 테스트
+        async function testLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showAlert('로그인 정보를 입력해주세요', 'error');
+                return;
+            }
+
+            const testBtn = document.getElementById('testBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = '테스트 중...';
+
+            try {
+                const response = await fetch('/api/test-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('로그인 성공! 자동 지원을 시작할 수 있습니다', 'success');
+                } else {
+                    showAlert(`로그인 실패: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showAlert('테스트 중 오류가 발생했습니다', 'error');
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = '로그인 테스트';
+            }
+        }
+
+        // 봇 시작
+        async function startBot() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const keywords = document.getElementById('keywords').value;
+            
+            if (!username || !password) {
+                showAlert('로그인 정보를 입력해주세요', 'error');
+                return;
+            }
+            
+            if (!keywords.trim()) {
+                showAlert('검색 키워드를 입력해주세요', 'error');
+                return;
+            }
+
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = true;
+            startBtn.textContent = '시작 중...';
+
+            try {
+                const response = await fetch('/api/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        keywords: keywords,
+                        location: document.getElementById('location').value,
+                        max_apps: document.getElementById('maxApps').value
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                } else {
+                    showAlert(result.message, 'error');
+                    startBtn.disabled = false;
+                    startBtn.textContent = '자동 지원 시작';
+                }
+            } catch (error) {
+                showAlert('시작 중 오류가 발생했습니다', 'error');
+                startBtn.disabled = false;
+                startBtn.textContent = '자동 지원 시작';
+            }
+        }
+
+        // 상태 확인
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const status = await response.json();
+                
+                updateStatus(status);
+                
+                // 실행이 완료되면 버튼 활성화
+                if (!status.running && document.getElementById('startBtn').disabled) {
+                    const startBtn = document.getElementById('startBtn');
+                    startBtn.disabled = false;
+                    startBtn.textContent = '자동 지원 시작';
+                }
+                
+            } catch (error) {
+                console.error('상태 확인 실패:', error);
+            }
+        }
+
+        // 상태 업데이트
+        function updateStatus(status) {
+            const statusText = document.getElementById('statusText');
+            const statusIcon = document.getElementById('statusIcon');
+            const progressFill = document.getElementById('progressFill');
+            const logsContainer = document.getElementById('logsContainer');
+            
+            if (status.running) {
+                statusText.textContent = status.progress || '실행 중';
+                statusText.className = 'status-text status-running';
+                statusIcon.textContent = '🔄';
+                progressFill.style.width = '70%';
+            } else {
+                statusText.textContent = '대기 중';
+                statusText.className = 'status-text status-idle';
+                statusIcon.textContent = '⏸️';
+                progressFill.style.width = '0%';
+            }
+            
+            if (status.error) {
+                statusText.textContent = '오류 발생';
+                statusText.className = 'status-text status-error';
+                statusIcon.textContent = '❌';
+                showAlert(status.error, 'error');
+            }
+            
+            // 로그 업데이트
+            if (status.logs && status.logs.length > 0) {
+                logsContainer.innerHTML = status.logs.map(log => 
+                    `<div class="log-entry">${log}</div>`
+                ).join('');
+                logsContainer.scrollTop = logsContainer.scrollHeight;
+            }
+            
+            // 통계 업데이트
+            if (status.stats) {
+                document.getElementById('todayApps').textContent = status.stats.applied_count || 0;
+            }
+        }
+
+        // 알림 표시
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = `alert alert-${type}`;
+            
+            const alertElement = document.createElement('div');
+            alertElement.className = alertClass;
+            alertElement.textContent = message;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertElement);
+            
+            setTimeout(() => {
+                alertElement.remove();
+            }, 5000);
+        }
+
+        // 상태 확인 시작
+        function startStatusCheck() {
+            statusCheckInterval = setInterval(checkStatus, 2000); // 2초마다 확인
+        }
+
+        // 페이지 언로드 시 interval 정리
+        window.onbeforeunload = function() {
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+            }
+        };
+    </script>
+</body>
+</html>
