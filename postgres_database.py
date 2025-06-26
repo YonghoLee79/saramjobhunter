@@ -406,16 +406,6 @@ class PostgresApplicationDatabase:
             self.set_configuration('last_max_applications', str(max_apps), '마지막으로 사용한 최대 지원수')
         except Exception as e:
             pass  # 저장 실패해도 진행
-            
-            session.commit()
-            return True
-            
-        except Exception as e:
-            session.rollback()
-            print(f"설정 저장 오류: {str(e)}")
-            return False
-        finally:
-            session.close()
 
 if __name__ == "__main__":
     # 데이터베이스 테스트

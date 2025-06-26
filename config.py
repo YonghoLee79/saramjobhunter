@@ -15,23 +15,24 @@ class Config:
         self.username = os.getenv("SARAMIN_USERNAME", "")
         self.password = os.getenv("SARAMIN_PASSWORD", "")
         
-        # 마지막 사용 설정 불러오기
+        # 마지막 사용 설정 불러오기 (데이터베이스 우선, 환경변수는 백업)
         try:
             from postgres_database import PostgresApplicationDatabase
             db = PostgresApplicationDatabase()
             
-            # 검색 조건 - 마지막 사용한 값으로 복원
+            # 검색 조건 - 데이터베이스에서 마지막 사용한 값 우선 사용
             last_keywords = db.get_last_used_keywords()
             last_location = db.get_last_used_location()
             last_max_apps = db.get_last_used_max_applications()
             
-            self.search_keywords = os.getenv("SEARCH_KEYWORDS", last_keywords)
-            self.location = os.getenv("LOCATION", last_location)
-            self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", str(last_max_apps)))
+            # 데이터베이스 값이 있으면 우선 사용, 없으면 환경변수나 기본값 사용
+            self.search_keywords = last_keywords if last_keywords else os.getenv("SEARCH_KEYWORDS", "바이오,생명공학,제약,의료기기")
+            self.location = last_location if last_location else os.getenv("LOCATION", "서울")
+            self.max_applications_per_day = last_max_apps if last_max_apps else int(os.getenv("MAX_APPLICATIONS_PER_DAY", "100"))
             
         except Exception as e:
-            # 데이터베이스 오류 시 기본값 사용
-            self.search_keywords = os.getenv("SEARCH_KEYWORDS", "바이오")
+            # 데이터베이스 오류 시 환경변수 또는 기본값 사용
+            self.search_keywords = os.getenv("SEARCH_KEYWORDS", "바이오,생명공학,제약,의료기기")
             self.location = os.getenv("LOCATION", "서울")
             self.max_applications_per_day = int(os.getenv("MAX_APPLICATIONS_PER_DAY", "100"))
         

@@ -114,6 +114,19 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
+- June 26, 2025: Settings Persistence System Complete Fix
+  - **Configuration Priority Issue Resolved**: Fixed config.py to properly prioritize database-saved settings over environment variables
+    - Database values now correctly override .env file defaults when available
+    - Updated Config class logic to use "last_keywords if last_keywords else default" pattern
+    - Fixed MAX_APPLICATIONS_PER_DAY in .env from 10 to 100 to support proper application limits
+  - **Database Session Bug Fixed**: Corrected session scope issues in postgres_database.py
+    - Removed orphaned session.commit() and session.close() calls in save_last_used_max_applications()
+    - All database operations now use proper session management through set_configuration()
+  - **Persistent Settings Validation**: Comprehensive testing confirms settings persist across app restarts
+    - Keywords, location, and max applications properly saved and restored from PostgreSQL
+    - Web interface correctly displays and maintains user-configured values
+    - No more unexpected resets to default values
+
 - June 26, 2025: Feature Removal - Saramin Application Status Monitoring
   - **Removed Direct Saramin Integration**: Eliminated real-time application status checking per user request
     - Removed `saramin_status_checker.py` integration from web interface
