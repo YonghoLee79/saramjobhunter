@@ -1179,28 +1179,27 @@
             const selectedRadio = document.querySelector('input[name="maxApps"]:checked');
             const display = document.getElementById('maxAppsDisplay');
             
+            if (!display) {
+                console.log('maxAppsDisplay 요소를 찾을 수 없습니다');
+                return;
+            }
+            
             if (selectedRadio) {
                 const value = parseInt(selectedRadio.value);
                 display.innerHTML = `<strong>선택된 최대 지원 수:</strong> ${value}개`;
                 display.className = 'max-apps-display';
+                console.log(`최대 지원 수 업데이트: ${value}개`);
             } else {
                 display.innerHTML = '일일 최대 지원 수를 선택해주세요';
                 display.className = 'max-apps-display empty';
+                console.log('최대 지원 수 선택 없음');
             }
         }
 
         // 페이지 로드 시 설정 불러오기
         window.onload = function() {
             try {
-                loadConfig();
-                updateKeywordsDisplay();
-                updateLocationDisplay();
-                updateMaxAppsDisplay();
-                startStatusCheck();
-                loadApplicationHistory();
-                loadExecutionHistory();
-                
-                // 이벤트 리스너 추가 (안전하게)
+                // 먼저 이벤트 리스너 설정
                 const keywordsEl = document.getElementById('keywords');
                 if (keywordsEl) {
                     keywordsEl.addEventListener('input', updateKeywordsDisplay);
@@ -1216,11 +1215,30 @@
                 
                 // 일일 최대 지원 수 라디오 버튼 이벤트 리스너
                 const maxAppsRadios = document.querySelectorAll('input[name="maxApps"]');
+                console.log(`라디오 버튼 ${maxAppsRadios.length}개 발견`);
                 if (maxAppsRadios.length > 0) {
-                    maxAppsRadios.forEach(radio => {
-                        radio.addEventListener('change', updateMaxAppsDisplay);
+                    maxAppsRadios.forEach((radio, index) => {
+                        console.log(`라디오 버튼 ${index + 1}: ${radio.value}개`);
+                        radio.addEventListener('change', function() {
+                            console.log(`라디오 버튼 변경: ${this.value}개 선택됨`);
+                            updateMaxAppsDisplay();
+                        });
+                        radio.addEventListener('click', function() {
+                            console.log(`라디오 버튼 클릭: ${this.value}개`);
+                            updateMaxAppsDisplay();
+                        });
                     });
                 }
+                
+                // 설정 로드 및 디스플레이 업데이트
+                loadConfig();
+                updateKeywordsDisplay();
+                updateLocationDisplay();
+                updateMaxAppsDisplay();
+                startStatusCheck();
+                loadApplicationHistory();
+                loadExecutionHistory();
+                
             } catch (error) {
                 console.error('페이지 초기화 중 오류:', error);
             }
