@@ -114,6 +114,21 @@ This project is a Python-based automation bot that automatically searches and ap
 
 ## Recent Changes
 
+- June 26, 2025: Company-Based Duplicate Application Prevention Complete
+  - **UI Layout Improvement**: Moved main action buttons below usage instructions
+    - Relocated "사람인 로그인", "웹 자동화 실행", "자동화 중단" buttons for better UX flow
+    - Usage guide now appears before action buttons for clearer instruction flow
+  - **Advanced Duplicate Prevention**: Implemented company-based duplicate filtering
+    - Added `is_company_already_applied()` method to check for same company applications within 30 days
+    - Enhanced `apply_to_job()` method with company name duplicate checking
+    - Prevents multiple applications to the same company within configurable time period
+    - Real-time duplicate prevention logs displayed in web interface
+  - **Real-time Application Logging**: Enhanced web app feedback system
+    - Added `application_callback` attribute to SaraminBot class for live updates
+    - Web app now displays real-time "지원 완료: Company - Job Title" messages
+    - Automatic log refresh during automation process for immediate user feedback
+    - Integration between backend job application process and frontend display
+
 - June 26, 2025: UI Cleanup and Default Settings Update
   - **Music Feature Removal**: Completely removed Jennie music playback functionality
     - Deleted music toggle button from header layout

@@ -264,6 +264,16 @@ def run_web_automation_background(config_data):
         app_state['progress'] = "채용공고 검색 중..."
         add_log("자동 채용공고 검색을 시작합니다")
         
+        # 지원 진행 상황을 실시간으로 추적하기 위한 콜백 함수
+        def application_callback(job_info):
+            company = job_info.get('company', '알 수 없음')
+            title = job_info.get('title', '알 수 없음')
+            add_log(f"✓ 지원 완료: {company} - {title}")
+            app_state['progress'] = f"지원 중... ({job_info.get('count', 0)}개 완료)"
+        
+        # 콜백 함수를 봇에 설정
+        bot.application_callback = application_callback
+        
         applied_count = bot.search_and_apply_jobs()
         
         # 실행 기록

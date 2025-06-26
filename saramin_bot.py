@@ -21,11 +21,12 @@ import urllib.parse
 class SaraminBot:
     def __init__(self, config, database, logger):
         self.config = config
-        self.db = database
+        self.database = database
         self.logger = logger
         self.driver: Optional[webdriver.Chrome] = None
         self.wait: Optional[WebDriverWait] = None
         self.base_url = "https://www.saramin.co.kr"
+        self.application_callback = None  # 웹 앱에서 실시간 로그를 위한 콜백 함수
         
     def setup_driver(self):
         """Chrome WebDriver 설정"""
@@ -467,7 +468,7 @@ class SaraminBot:
         try:
             # 중복 지원 확인
             job_id = self.extract_job_id(job_url)
-            if self.db.is_already_applied(job_id):
+            if self.database.is_already_applied(job_id):
                 self.logger.info(f"이미 지원한 공고입니다 (ID: {job_id})")
                 return False
             
@@ -544,6 +545,11 @@ class SaraminBot:
             
             self.logger.info(f"지원 시도: {company_name} - {job_title}")
             
+            # 회사명 기반 중복 지원 확인 (최근 30일 내)
+            if self.database.is_company_already_applied(company_name, days=30):
+                self.logger.info(f"중복 지원 방지: {company_name}에 이미 지원함 (최근 30일 내)")
+                return False
+            
             # 지원하기 버튼 찾기 (2024년 사람인 웹사이트 구조 반영)
             apply_button = None
             
@@ -611,8 +617,19 @@ class SaraminBot:
             # 지원서 작성 페이지에서 이력서 선택 및 제출
             if self.submit_application():
                 # 데이터베이스에 지원 기록 저장
-                self.db.record_application(job_id, job_url, company_name, job_title)
+                self.database.record_application(job_id, job_url, company_name, job_title)
                 self.logger.info(f"지원 완료: {company_name} - {job_title}")
+                
+                # 웹 앱 콜백 함수 호출 (실시간 로그 표시)
+                if self.application_callback:
+                    job_info = {
+                        'company': company_name,
+                        'title': job_title,
+                        'url': job_url,
+                        'job_id': job_id
+                    }
+                    self.application_callback(job_info)
+                
                 return True
             else:
                 self.logger.warning(f"지원 실패: {company_name} - {job_title}")

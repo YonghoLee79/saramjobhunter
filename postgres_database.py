@@ -37,6 +37,23 @@ class PostgresApplicationDatabase:
         finally:
             session.close()
     
+    def is_company_already_applied(self, company_name, days=30):
+        """회사명 기반 중복 지원 확인 (최근 30일 내)"""
+        session = create_session()
+        try:
+            from datetime import timedelta
+            cutoff_date = datetime.now() - timedelta(days=days)
+            application = session.query(JobApplication)\
+                .filter(JobApplication.company_name == company_name)\
+                .filter(JobApplication.application_date >= cutoff_date)\
+                .first()
+            return application is not None
+        except Exception as e:
+            print(f"회사 중복 지원 확인 오류: {str(e)}")
+            return False
+        finally:
+            session.close()
+    
     def record_application(self, job_id, job_url, company_name, job_title, keyword=None):
         """지원 기록 저장"""
         session = create_session()
