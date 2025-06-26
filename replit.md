@@ -148,4 +148,4 @@ This project is a Python-based automation bot that automatically searches and ap
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Default search settings: Use "바이오" keyword, "서울" location, and previous max applications count as defaults.
+Default search settings: Use "바이오,생명공학,제약,의료기기" keywords, "서울" location, and 100 max applications as defaults.
