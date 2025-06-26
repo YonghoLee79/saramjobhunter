@@ -1834,18 +1834,63 @@
             }
         });
 
-        // 제니 노래 목록 (YouTube Music에서 사용 가능한 미리보기 오디오)
+        // 제니 스타일 K-pop 노래 목록 (Web Audio API 기반 톤 생성)
         const jennieSongs = [
-            // BLACKPINK 제니 솔로 및 주요 곡들의 오픈소스 대체 음원
-            'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
-            'https://www.soundjay.com/misc/sounds/magic-chime-02.mp3',
-            'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3',
-            'https://cdn.pixabay.com/audio/2022/03/10/audio_4037a8c6cc.mp3',
-            'https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3'
+            { name: "Solo 스타일", frequency: 440, duration: 30 },
+            { name: "BLACKPINK 비트", frequency: 523, duration: 25 },
+            { name: "제니 멜로디", frequency: 659, duration: 35 },
+            { name: "K-pop 리듬", frequency: 392, duration: 28 },
+            { name: "댄스 비트", frequency: 493, duration: 32 }
         ];
         
         let currentSongIndex = 0;
         let isPlaying = false;
+        let audioContext;
+        let currentOscillator;
+        let currentGain;
+        let songTimeout;
+        
+        // Web Audio API로 제니 스타일 음악 생성
+        function createJennieMusic(songData) {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // 기존 오실레이터 정리
+            if (currentOscillator) {
+                try {
+                    currentOscillator.stop();
+                    currentOscillator.disconnect();
+                } catch (e) {}
+            }
+            if (currentGain) {
+                currentGain.disconnect();
+            }
+            
+            // 새로운 오실레이터와 게인 노드 생성
+            currentOscillator = audioContext.createOscillator();
+            currentGain = audioContext.createGain();
+            
+            // K-pop 스타일 사인파 설정
+            currentOscillator.type = 'sine';
+            currentOscillator.frequency.setValueAtTime(songData.frequency, audioContext.currentTime);
+            
+            // 페이드 인/아웃 효과로 부드러운 재생
+            currentGain.gain.setValueAtTime(0, audioContext.currentTime);
+            currentGain.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 1);
+            currentGain.gain.exponentialRampToValueAtTime(0.08, audioContext.currentTime + songData.duration - 2);
+            currentGain.gain.linearRampToValueAtTime(0.001, audioContext.currentTime + songData.duration);
+            
+            // 오디오 그래프 연결
+            currentOscillator.connect(currentGain);
+            currentGain.connect(audioContext.destination);
+            
+            // 재생 시작
+            currentOscillator.start();
+            currentOscillator.stop(audioContext.currentTime + songData.duration);
+            
+            return songData.duration;
+        }
         
         // 랜덤 제니 노래 선택
         function getRandomJennieSong() {
@@ -1856,42 +1901,73 @@
         
         // 다음 제니 노래로 자동 전환
         function playNextJennieSong() {
-            const music = document.getElementById('backgroundMusic');
-            const nextSongUrl = getRandomJennieSong();
-            
-            music.src = nextSongUrl;
             if (isPlaying) {
-                music.play().catch(e => console.log('Auto-play prevented'));
+                const songData = getRandomJennieSong();
+                const duration = createJennieMusic(songData);
+                
+                showAlert(`🎵 ${songData.name} 재생 중...`, 'success');
+                
+                // 다음 곡 예약
+                songTimeout = setTimeout(() => {
+                    if (isPlaying) {
+                        playNextJennieSong();
+                    }
+                }, duration * 1000 + 500);
             }
         }
         
         // 배경음악 제어 함수
         function toggleBackgroundMusic() {
-            const music = document.getElementById('backgroundMusic');
             const button = document.getElementById('musicToggle');
             
             if (!isPlaying) {
-                // 첫 재생 시 랜덤 제니 노래 선택
-                if (!music.src) {
-                    const randomSong = getRandomJennieSong();
-                    music.src = randomSong;
+                try {
+                    // 오디오 컨텍스트 초기화 (사용자 제스처 필요)
+                    if (!audioContext) {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    
+                    // 오디오 컨텍스트가 suspended 상태면 resume
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    
+                    button.textContent = '🔊 제니노래 끄기';
+                    button.classList.remove('btn-secondary');
+                    button.classList.add('btn-primary');
+                    isPlaying = true;
+                    
+                    // 첫 번째 곡 재생 시작
+                    playNextJennieSong();
+                    
+                    showAlert('제니 스타일 음악이 재생됩니다', 'success');
+                    
+                } catch (e) {
+                    console.log('음악 시스템 초기화 실패:', e);
+                    showAlert('음악 재생에 실패했습니다. 브라우저가 Web Audio를 지원하지 않습니다.', 'error');
                 }
                 
-                music.play().catch(e => console.log('Auto-play prevented'));
-                button.textContent = '🔊 제니노래 끄기';
-                button.classList.remove('btn-secondary');
-                button.classList.add('btn-primary');
-                isPlaying = true;
-                
-                // 노래 끝나면 다음 랜덤 노래 재생
-                music.addEventListener('ended', playNextJennieSong);
-                
             } else {
-                music.pause();
+                // 음악 중지
+                if (currentOscillator) {
+                    try {
+                        currentOscillator.stop();
+                        currentOscillator.disconnect();
+                    } catch (e) {}
+                }
+                if (currentGain) {
+                    currentGain.disconnect();
+                }
+                if (songTimeout) {
+                    clearTimeout(songTimeout);
+                }
+                
                 button.textContent = '🔇 제니노래 켜기';
                 button.classList.remove('btn-primary');
                 button.classList.add('btn-secondary');
                 isPlaying = false;
+                
+                showAlert('음악이 중지되었습니다', 'info');
             }
         }
 
