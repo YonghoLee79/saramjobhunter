@@ -776,36 +776,20 @@
                     <div class="max-apps-selection">
                         <div class="max-apps-checkboxes" id="maxAppsCheckboxes">
                             <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="5">
-                                <span>5개</span>
-                            </label>
-                            <label class="checkbox-item">
                                 <input type="checkbox" name="maxApps" value="10" checked>
                                 <span>10개</span>
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="15">
-                                <span>15개</span>
+                                <input type="checkbox" name="maxApps" value="100">
+                                <span>100개</span>
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="20">
-                                <span>20개</span>
+                                <input type="checkbox" name="maxApps" value="500">
+                                <span>500개</span>
                             </label>
                             <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="25">
-                                <span>25개</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="30">
-                                <span>30개</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="40">
-                                <span>40개</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="maxApps" value="50">
-                                <span>50개</span>
+                                <input type="checkbox" name="maxApps" value="1000">
+                                <span>1000개</span>
                             </label>
                         </div>
                         <div class="max-apps-display" id="maxAppsDisplay"></div>
@@ -905,13 +889,59 @@
     <script>
         let statusCheckInterval;
         
+        // 지역 표시 업데이트
+        function updateLocationDisplay() {
+            const checkboxes = document.querySelectorAll('input[name="locations"]:checked');
+            const display = document.getElementById('locationDisplay');
+            
+            if (checkboxes.length > 0) {
+                const locations = Array.from(checkboxes).map(cb => cb.value);
+                display.innerHTML = `<strong>선택된 지역 (${locations.length}개):</strong> ${locations.join(', ')}`;
+                display.className = 'location-display';
+            } else {
+                display.innerHTML = '지역을 선택해주세요';
+                display.className = 'location-display empty';
+            }
+        }
+
+        // 일일 최대 지원 수 표시 업데이트
+        function updateMaxAppsDisplay() {
+            const checkboxes = document.querySelectorAll('input[name="maxApps"]:checked');
+            const display = document.getElementById('maxAppsDisplay');
+            
+            if (checkboxes.length > 0) {
+                const maxApps = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                const maxValue = Math.max(...maxApps);
+                display.innerHTML = `<strong>선택된 지원 수 (${checkboxes.length}개):</strong> ${maxApps.join(', ')}개 (최대: ${maxValue}개)`;
+                display.className = 'max-apps-display';
+            } else {
+                display.innerHTML = '일일 최대 지원 수를 선택해주세요';
+                display.className = 'max-apps-display empty';
+            }
+        }
+
         // 페이지 로드 시 설정 불러오기
         window.onload = function() {
             loadConfig();
             updateKeywordsDisplay();
+            updateLocationDisplay();
+            updateMaxAppsDisplay();
             startStatusCheck();
             loadApplicationHistory();
             loadExecutionHistory();
+            
+            // 이벤트 리스너 추가
+            document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+            
+            // 지역 체크박스 이벤트 리스너
+            document.querySelectorAll('input[name="locations"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateLocationDisplay);
+            });
+            
+            // 일일 최대 지원 수 체크박스 이벤트 리스너
+            document.querySelectorAll('input[name="maxApps"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateMaxAppsDisplay);
+            });
         };
 
         // 설정 불러오기
