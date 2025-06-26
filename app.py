@@ -509,12 +509,16 @@ def upload_resume():
         if file.filename == '':
             return jsonify({'success': False, 'message': '파일이 선택되지 않았습니다.'})
         
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+        if file and file.filename and allowed_file(file.filename):
+            original_filename = file.filename
+            filename = secure_filename(original_filename)
             # 파일명에 타임스탬프 추가하여 중복 방지
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"{timestamp}_{filename}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
+            # 디버깅 정보 추가
+            add_log(f"파일 업로드 중: {file.filename} -> {filename}")
             file.save(filepath)
             
             # 이력서 분석

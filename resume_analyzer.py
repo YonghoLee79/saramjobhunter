@@ -43,7 +43,17 @@ class ResumeAnalyzer:
     
     def extract_text_from_file(self, file_path: str) -> str:
         """파일 확장자에 따라 텍스트 추출"""
+        if not os.path.exists(file_path):
+            raise ValueError(f"파일을 찾을 수 없습니다: {file_path}")
+        
         file_extension = os.path.splitext(file_path)[1].lower()
+        
+        # 디버깅 정보
+        print(f"파일 경로: {file_path}")
+        print(f"파일 확장자: '{file_extension}'")
+        
+        if not file_extension:
+            raise ValueError("파일 확장자가 없습니다. PDF, DOCX, DOC, TXT 파일만 지원됩니다.")
         
         if file_extension == '.pdf':
             return self.extract_text_from_pdf(file_path)
@@ -54,10 +64,13 @@ class ResumeAnalyzer:
                 with open(file_path, 'r', encoding='utf-8') as file:
                     return file.read()
             except:
-                with open(file_path, 'r', encoding='cp949') as file:
-                    return file.read()
+                try:
+                    with open(file_path, 'r', encoding='cp949') as file:
+                        return file.read()
+                except Exception as e:
+                    raise ValueError(f"TXT 파일 읽기 오류: {str(e)}")
         else:
-            raise ValueError(f"지원하지 않는 파일 형식: {file_extension}")
+            raise ValueError(f"지원하지 않는 파일 형식: '{file_extension}'. PDF, DOCX, DOC, TXT 파일만 지원됩니다.")
     
     def extract_keywords_with_ai(self, text: str) -> List[str]:
         """OpenAI를 사용하여 이력서에서 취업 키워드 추출"""
