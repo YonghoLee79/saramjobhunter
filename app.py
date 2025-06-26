@@ -177,6 +177,12 @@ def execute_web_automation():
     """로그인 완료 후 웹 자동화 실행"""
     config_data = request.json or {}
     
+    # 디버그: 전달받은 설정값 로그
+    add_log(f"웹 자동화 설정 확인:")
+    add_log(f"- 키워드: {config_data.get('keywords', '없음')}")
+    add_log(f"- 지역: {config_data.get('locations', '없음')}")
+    add_log(f"- 최대 지원 수: {config_data.get('max_applications', '없음')}")
+    
     # 기존 프로세스 중단
     app_state['running'] = False
     add_log("기존 프로세스를 중단하고 웹 자동화를 시작합니다")
@@ -301,7 +307,7 @@ LOCATION={config_data.get('location', '서울')}
 JOB_TYPE={config_data.get('job_type', '정규직')}
 
 # 지원 설정
-MAX_APPLICATIONS_PER_DAY={config_data.get('max_apps', '10')}
+MAX_APPLICATIONS_PER_DAY={config_data.get('max_applications', config_data.get('max_apps', '10'))}
 MAX_PAGES={config_data.get('max_pages', '5')}
 MIN_WAIT_TIME={config_data.get('min_wait', '30')}
 MAX_WAIT_TIME={config_data.get('max_wait', '60')}
