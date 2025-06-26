@@ -160,10 +160,15 @@ def run_hybrid_bot_background(config_data):
 @app.route('/api/execute-web-automation', methods=['POST'])
 def execute_web_automation():
     """로그인 완료 후 웹 자동화 실행"""
-    if app_state['running']:
-        return jsonify({'success': False, 'message': '이미 실행 중입니다'})
-    
     config_data = request.json or {}
+    
+    # 기존 프로세스 중단
+    app_state['running'] = False
+    add_log("기존 프로세스를 중단하고 웹 자동화를 시작합니다")
+    
+    # 잠시 대기 후 새로운 자동화 시작
+    import time
+    time.sleep(1)
     
     # 직접 자동화 실행
     thread = threading.Thread(target=run_web_automation_background, args=(config_data,))
@@ -178,6 +183,17 @@ def execute_web_automation():
             '실시간 진행상황을 모니터링하세요',
             '완료까지 약 10-20분 소요됩니다'
         ]
+    })
+
+@app.route('/api/stop', methods=['POST'])
+def stop_automation():
+    """실행 중인 자동화 중단"""
+    app_state['running'] = False
+    add_log("사용자 요청으로 자동화를 중단합니다")
+    
+    return jsonify({
+        'success': True,
+        'message': '자동화가 중단되었습니다'
     })
 
 def run_web_automation_background(config_data):

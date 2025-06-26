@@ -131,6 +131,14 @@
             box-shadow: 0 5px 15px rgba(8, 145, 178, 0.3);
         }
 
+        .btn-stop {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn-stop:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
         .btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
@@ -488,6 +496,7 @@
                 <button class="btn" onclick="startBot()" id="startBtn">자동 지원 시작</button>
                 <button class="btn btn-hybrid" onclick="startHybridBot()" id="hybridBtn">🔄 하이브리드 모드 시작</button>
                 <button class="btn btn-web" onclick="executeWebAutomation()" id="webBtn">🌐 웹 자동화 실행</button>
+                <button class="btn btn-stop" onclick="stopAutomation()" id="stopBtn">⏹️ 자동화 중단</button>
             </div>
 
             <!-- 상태 카드 -->
@@ -782,6 +791,37 @@
             } finally {
                 webBtn.disabled = false;
                 webBtn.textContent = '🌐 웹 자동화 실행';
+            }
+        }
+
+        // 자동화 중단
+        async function stopAutomation() {
+            const stopBtn = document.getElementById('stopBtn');
+            
+            stopBtn.disabled = true;
+            stopBtn.textContent = '중단 중...';
+
+            try {
+                const response = await fetch('/api/stop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('자동화가 중단되었습니다', 'info');
+                    updateStatus(); // 상태 업데이트
+                } else {
+                    showAlert('자동화 중단 실패', 'error');
+                }
+            } catch (error) {
+                showAlert('자동화 중단 중 오류가 발생했습니다', 'error');
+            } finally {
+                stopBtn.disabled = false;
+                stopBtn.textContent = '⏹️ 자동화 중단';
             }
         }
 
