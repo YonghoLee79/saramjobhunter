@@ -403,6 +403,97 @@
             font-weight: 500;
         }
 
+        .location-selection {
+            margin-top: 10px;
+        }
+
+        .location-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background: white;
+            border: 1px solid #dee2e6;
+        }
+
+        .checkbox-item:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        .checkbox-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + span {
+            color: #2196f3;
+            font-weight: 600;
+        }
+
+        .location-display {
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 6px;
+            border: 1px solid #b3d9ff;
+            font-size: 14px;
+            color: #0066cc;
+            min-height: 20px;
+        }
+
+        .location-display.empty {
+            color: #999;
+            font-style: italic;
+        }
+
+        .max-apps-selection {
+            margin-top: 10px;
+        }
+
+        .max-apps-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .max-apps-display {
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+            font-size: 14px;
+            color: #856404;
+            min-height: 20px;
+        }
+
+        .max-apps-display.empty {
+            color: #999;
+            font-style: italic;
+        }
+
         .usage-guide {
             background: #fafafa;
             border: 1px solid #e5e7eb;
@@ -604,22 +695,121 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">지역</label>
-                    <select id="location">
-                        <option value="서울">서울</option>
-                        <option value="경기">경기</option>
-                        <option value="인천">인천</option>
-                        <option value="부산">부산</option>
-                        <option value="대구">대구</option>
-                        <option value="광주">광주</option>
-                        <option value="대전">대전</option>
-                        <option value="울산">울산</option>
-                    </select>
+                    <label for="locations">지역 (다중 선택 가능)</label>
+                    <div class="location-selection">
+                        <div class="location-checkboxes" id="locationCheckboxes">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="서울" checked>
+                                <span>서울</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="경기">
+                                <span>경기</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="인천">
+                                <span>인천</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="부산">
+                                <span>부산</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="대구">
+                                <span>대구</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="광주">
+                                <span>광주</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="대전">
+                                <span>대전</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="울산">
+                                <span>울산</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="세종">
+                                <span>세종</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="강원">
+                                <span>강원</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="충북">
+                                <span>충북</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="충남">
+                                <span>충남</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="전북">
+                                <span>전북</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="전남">
+                                <span>전남</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="경북">
+                                <span>경북</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="경남">
+                                <span>경남</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="locations" value="제주">
+                                <span>제주</span>
+                            </label>
+                        </div>
+                        <div class="location-display" id="locationDisplay"></div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="maxApps">일일 최대 지원 수</label>
-                    <input type="number" id="maxApps" value="10" min="1" max="50">
+                    <label for="maxApps">일일 최대 지원 수 (다중 선택 가능)</label>
+                    <div class="max-apps-selection">
+                        <div class="max-apps-checkboxes" id="maxAppsCheckboxes">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="5">
+                                <span>5개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="10" checked>
+                                <span>10개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="15">
+                                <span>15개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="20">
+                                <span>20개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="25">
+                                <span>25개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="30">
+                                <span>30개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="40">
+                                <span>40개</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="maxApps" value="50">
+                                <span>50개</span>
+                            </label>
+                        </div>
+                        <div class="max-apps-display" id="maxAppsDisplay"></div>
+                    </div>
                 </div>
 
                 <button class="btn btn-login" onclick="openSaraminLogin()" id="loginBtn">🔗 1. 사람인 로그인</button>
@@ -897,11 +1087,21 @@
         async function executeWebAutomation() {
             const webBtn = document.getElementById('webBtn');
             const keywords = document.getElementById('keywords').value;
-            const location = document.getElementById('location').value;
-            const maxApps = document.getElementById('maxApps').value;
+            const selectedLocations = Array.from(document.querySelectorAll('input[name="locations"]:checked')).map(cb => cb.value);
+            const selectedMaxApps = Array.from(document.querySelectorAll('input[name="maxApps"]:checked')).map(cb => parseInt(cb.value));
             
             if (!keywords.trim()) {
                 showAlert('검색 키워드를 입력해주세요', 'error');
+                return;
+            }
+
+            if (selectedLocations.length === 0) {
+                showAlert('지역을 최소 1개 이상 선택해주세요', 'error');
+                return;
+            }
+
+            if (selectedMaxApps.length === 0) {
+                showAlert('일일 최대 지원 수를 선택해주세요', 'error');
                 return;
             }
 
@@ -916,8 +1116,8 @@
                     },
                     body: JSON.stringify({
                         keywords: keywords,
-                        location: location,
-                        max_applications: parseInt(maxApps) || 10
+                        locations: selectedLocations,
+                        max_applications: Math.max(...selectedMaxApps)
                     })
                 });
 
@@ -1271,9 +1471,21 @@
             
             // 키워드 표시 업데이트
             updateKeywordsDisplay();
+            updateLocationDisplay();
+            updateMaxAppsDisplay();
             
             // 키워드 입력 시 실시간 업데이트
             document.getElementById('keywords').addEventListener('input', updateKeywordsDisplay);
+            
+            // 지역 체크박스 변경 시 업데이트
+            document.querySelectorAll('input[name="locations"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateLocationDisplay);
+            });
+            
+            // 일일 최대 지원 수 체크박스 변경 시 업데이트
+            document.querySelectorAll('input[name="maxApps"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateMaxAppsDisplay);
+            });
             
             // 이력서 관련 이벤트 리스너
             const fetchResumeBtn = document.getElementById('fetchResumeBtn');
