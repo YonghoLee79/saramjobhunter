@@ -68,53 +68,123 @@ class SaraminBot:
             return False
     
     def login(self):
-        """사람인 로그인"""
+        """사람인 로그인 (개선된 오류 처리)"""
         if not self.setup_driver():
             return False
             
-        try:
-            self.logger.info("사람인 로그인 시도 중...")
-            
-            # 로그인 페이지로 이동
-            self.driver.get(f"{self.base_url}/zf_user/auth/login")
-            self.random_wait(2, 4)
-            
-            # 아이디 입력
-            id_input = self.wait.until(
-                EC.presence_of_element_located((By.NAME, "id"))
-            )
-            id_input.clear()
-            self.type_like_human(id_input, self.config.username)
-            
-            # 비밀번호 입력
-            password_input = self.driver.find_element(By.NAME, "password")
-            password_input.clear()
-            self.type_like_human(password_input, self.config.password)
-            
-            self.random_wait(1, 2)
-            
-            # 로그인 버튼 클릭
-            login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-            login_btn.click()
-            
-            # 로그인 성공 확인
-            self.wait.until(lambda driver: driver.current_url != f"{self.base_url}/zf_user/auth/login")
-            
-            # 메인 페이지로 이동했는지 확인
-            if "login" not in self.driver.current_url:
-                self.logger.info("로그인 성공")
-                self.random_wait(2, 3)
-                return True
-            else:
-                self.logger.error("로그인 실패 - 잘못된 자격증명이거나 추가 인증이 필요할 수 있습니다")
-                return False
+        max_retries = 3
+        
+        for attempt in range(max_retries):
+            try:
+                self.logger.info(f"사람인 로그인 시도 중... ({attempt + 1}/{max_retries})")
                 
-        except TimeoutException:
-            self.logger.error("로그인 페이지 로딩 시간 초과")
-            return False
-        except Exception as e:
-            self.logger.error(f"로그인 중 오류 발생: {str(e)}")
-            return False
+                # 로그인 페이지로 이동
+                self.driver.get(f"{self.base_url}/zf_user/auth/login")
+                self.random_wait(3, 5)
+                
+                # Alert 처리 (서버 오류 메시지)
+                try:
+                    alert = self.driver.switch_to.alert
+                    alert_text = alert.text
+                    self.logger.warning(f"Alert 감지: {alert_text}")
+                    
+                    if "내부 서버 문제" in alert_text:
+                        alert.accept()
+                        self.logger.warning(f"서버 문제 감지 - 재시도 {attempt + 1}/{max_retries}")
+                        self.random_wait(10, 15)  # 서버 안정화 대기
+                        continue
+                    else:
+                        alert.accept()
+                except:
+                    pass  # Alert가 없으면 정상 진행
+                
+                # 아이디 입력
+                id_input = self.wait.until(
+                    EC.presence_of_element_located((By.NAME, "id"))
+                )
+                id_input.clear()
+                self.random_wait(1, 2)
+                self.type_like_human(id_input, self.config.username)
+                
+                # 비밀번호 입력
+                password_input = self.driver.find_element(By.NAME, "password")
+                password_input.clear()
+                self.random_wait(1, 2)
+                self.type_like_human(password_input, self.config.password)
+                
+                self.random_wait(2, 3)
+                
+                # 로그인 버튼 클릭
+                login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+                self.driver.execute_script("arguments[0].click();", login_btn)
+                
+                # 로그인 후 Alert 재확인
+                self.random_wait(3, 5)
+                try:
+                    alert = self.driver.switch_to.alert
+                    alert_text = alert.text
+                    self.logger.warning(f"로그인 후 Alert: {alert_text}")
+                    
+                    if "내부 서버 문제" in alert_text:
+                        alert.accept()
+                        if attempt < max_retries - 1:
+                            self.logger.warning(f"서버 문제로 재시도 {attempt + 1}/{max_retries}")
+                            self.random_wait(15, 20)
+                            continue
+                        else:
+                            self.logger.error("서버 문제로 로그인 불가")
+                            return False
+                    else:
+                        alert.accept()
+                except:
+                    pass  # Alert가 없으면 정상
+                
+                # 로그인 성공 확인 (URL 변경 대기)
+                try:
+                    self.wait.until(lambda driver: driver.current_url != f"{self.base_url}/zf_user/auth/login")
+                except TimeoutException:
+                    if attempt < max_retries - 1:
+                        self.logger.warning(f"로그인 시간 초과 - 재시도 {attempt + 1}/{max_retries}")
+                        self.random_wait(5, 10)
+                        continue
+                    else:
+                        self.logger.error("로그인 시간 초과")
+                        return False
+                
+                # 메인 페이지로 이동했는지 확인
+                current_url = self.driver.current_url
+                if "login" not in current_url and "auth" not in current_url:
+                    self.logger.info("로그인 성공")
+                    self.random_wait(2, 3)
+                    return True
+                else:
+                    if attempt < max_retries - 1:
+                        self.logger.warning(f"로그인 실패 - 재시도 {attempt + 1}/{max_retries}")
+                        self.random_wait(5, 10)
+                        continue
+                    else:
+                        self.logger.error("로그인 실패 - 잘못된 자격증명이거나 추가 인증이 필요할 수 있습니다")
+                        return False
+                        
+            except TimeoutException:
+                if attempt < max_retries - 1:
+                    self.logger.warning(f"로그인 페이지 로딩 시간 초과 - 재시도 {attempt + 1}/{max_retries}")
+                    self.random_wait(10, 15)
+                    continue
+                else:
+                    self.logger.error("로그인 페이지 로딩 시간 초과")
+                    return False
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    self.logger.warning(f"로그인 중 오류 발생 - 재시도 {attempt + 1}/{max_retries}: {str(e)}")
+                    self.random_wait(10, 15)
+                    continue
+                else:
+                    self.logger.error(f"로그인 중 오류 발생: {str(e)}")
+                    return False
+        
+        self.logger.error(f"로그인 실패 - {max_retries}번 시도 후 포기")
+        return False
     
     def search_and_apply_jobs(self):
         """채용 공고 검색 및 지원"""
