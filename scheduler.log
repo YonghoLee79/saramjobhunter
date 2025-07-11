@@ -1,0 +1,11 @@
+2025-07-11 13:23:27 - saramin_bot - INFO - 스케줄러 시작 - 매일 09:00에 실행됩니다.
+2025-07-11 13:23:27 - saramin_bot - INFO - 즉시 실행 모드
+2025-07-11 13:23:27 - saramin_bot - INFO - 스케줄된 사람인 봇 실행 시작
+2025-07-11 13:23:27 - saramin_bot - ERROR - 사람인 봇 실행 실패 (코드: 1)
+2025-07-11 13:23:27 - saramin_bot - ERROR - 오류: Traceback (most recent call last):
+  File "/Users/yongholee/Documents/SaramJobHunter/main.py", line 11, in <module>
+    from saramin_bot import SaraminBot
+  File "/Users/yongholee/Documents/SaramJobHunter/saramin_bot.py", line 9, in <module>
+    from selenium import webdriver
+ModuleNotFoundError: No module named 'selenium'
+

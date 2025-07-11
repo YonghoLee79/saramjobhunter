@@ -6,327 +6,142 @@ Saramin website automation bot using Selenium
 import time
 import random
 from datetime import datetime, timedelta
-from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from selenium.webdriver.common.keys import Keys
 from typing import Optional
 import urllib.parse
 
 class SaraminBot:
+    def save_login_page_html(self, filename="saramin_login_debug.html"):
+        """현재 로그인 페이지의 HTML을 파일로 저장 (디버깅용)"""
+        try:
+            html = self.driver.page_source
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write(html)
+            self.logger.info(f"로그인 페이지 HTML 저장 완료: {filename}")
+        except Exception as e:
+            self.logger.error(f"로그인 페이지 HTML 저장 실패: {str(e)}")
     def __init__(self, config, database, logger):
         self.config = config
         self.database = database
         self.logger = logger
-        self.driver: Optional[webdriver.Chrome] = None
+        self.driver: Optional[object] = None  # uc.Chrome 객체
         self.wait: Optional[WebDriverWait] = None
         self.base_url = "https://www.saramin.co.kr"
         self.application_callback = None  # 웹 앱에서 실시간 로그를 위한 콜백 함수
         
     def setup_driver(self):
-        """Chrome WebDriver 설정"""
+        """undetected-chromedriver로 Chrome WebDriver 설정 (anti-bot 우회)"""
         try:
-            chrome_options = Options()
-            
-            # 헤드리스 모드 설정 (필요시)
+            options = uc.ChromeOptions()
             if self.config.headless:
-                chrome_options.add_argument("--headless")
-                
-            # 기본 옵션들 (Replit 환경 최적화)
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--disable-web-security")
-            chrome_options.add_argument("--disable-features=VizDisplayCompositor")
-            chrome_options.add_argument("--disable-extensions")
-            chrome_options.add_argument("--disable-plugins")
-            chrome_options.add_argument("--disable-images")
-
-            # 봇 탐지 우회를 위한 고급 설정
-            chrome_options.add_argument("--window-size=1920,1080")
-            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
-            
-            # 자동화 탐지 우회
-            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            # 알림 차단
+                options.add_argument("--headless=new")
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--disable-web-security")
+            options.add_argument("--disable-features=VizDisplayCompositor")
+            options.add_argument("--disable-extensions")
+            options.add_argument("--disable-plugins")
+            options.add_argument("--disable-images")
+            options.add_argument("--window-size=1920,1080")
+            options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+            options.add_argument("--disable-blink-features=AutomationControlled")
             prefs = {
                 "profile.default_content_setting_values.notifications": 2,
                 "profile.default_content_settings.popups": 0,
                 "profile.managed_default_content_settings.images": 2
             }
-            chrome_options.add_experimental_option("prefs", prefs)
-            
-            # Replit 환경에서 chromium 사용
-            self.driver = webdriver.Chrome(options=chrome_options)
+            options.add_experimental_option("prefs", prefs)
+            # macOS 기본 Chrome 경로 지정
+            chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            self.driver = uc.Chrome(options=options, browser_executable_path=chrome_path)
             self.wait = WebDriverWait(self.driver, 10)
-            
-            # 고급 봇 탐지 우회 스크립트 실행
-            self.driver.execute_script("""
-                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-                delete navigator.__proto__.webdriver;
-                
-                // Chrome detection bypass
-                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
-                Object.defineProperty(navigator, 'languages', {get: () => ['ko-KR', 'ko', 'en-US', 'en']});
-                
-                // Screen and device info
-                Object.defineProperty(screen, 'width', {get: () => 1920});
-                Object.defineProperty(screen, 'height', {get: () => 1080});
-                
-                // Permission API override
-                const originalQuery = window.navigator.permissions.query;
-                window.navigator.permissions.query = (parameters) => (
-                    parameters.name === 'notifications' ?
-                        Promise.resolve({ state: Cypress.env('NOTIFICATION_PERMISSION') || 'granted' }) :
-                        originalQuery(parameters)
-                );
-                
-                // WebGL vendor override
-                const getParameter = WebGLRenderingContext.getParameter;
-                WebGLRenderingContext.prototype.getParameter = function(parameter) {
-                    if (parameter === 37445) return 'Intel Inc.';
-                    if (parameter === 37446) return 'Intel Iris OpenGL Engine';
-                    return getParameter(parameter);
-                };
-            """)
-            
-            # User-Agent 추가 설정
-            self.driver.execute_script("""
-                Object.defineProperty(navigator, 'userAgent', {
-                    get: () => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-                });
-            """)
-            
-            self.logger.info("Chrome WebDriver 설정 완료")
+            self.logger.info("undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)")
             return True
-            
         except Exception as e:
             self.logger.error(f"WebDriver 설정 실패: {str(e)}")
             return False
     
     def login(self):
-        """사람인 로그인 (개선된 오류 처리)"""
+        """사람인 로그인 (하이브리드: 자동 실패 시 수동 로그인 안내)"""
         if not self.setup_driver():
             return False
-            
-        max_retries = 3
-        
-        for attempt in range(max_retries):
+
+        self.logger.info("사람인 자동 로그인 시도")
+        try:
+            self.driver.get("https://www.saramin.co.kr/zf_user/auth/login")
+            self.random_wait(5, 8)
+            self.save_login_page_html()
+            self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
+            self.random_wait(2, 4)
+
+            # 자동화 접근 시 로그인 폼이 없으면 수동 로그인 안내
+            id_input = None
             try:
-                self.logger.info(f"사람인 로그인 시도 중... ({attempt + 1}/{max_retries})")
-                
-                # 사람처럼 자연스럽게 접근
-                if attempt > 0:
-                    # 재시도 시 세션 초기화
-                    self.driver.delete_all_cookies()
-                    self.driver.execute_script("window.localStorage.clear();")
-                    self.driver.execute_script("window.sessionStorage.clear();")
-                    
-                # 메인 페이지 먼저 방문 (사람 행동 패턴)
-                self.driver.get("https://www.saramin.co.kr")
-                self.random_wait(3, 6)
-                
-                # 페이지 스크롤 (봇 탐지 우회)
-                self.driver.execute_script("window.scrollTo(0, 500);")
-                self.random_wait(1, 2)
-                self.driver.execute_script("window.scrollTo(0, 0);")
-                self.random_wait(2, 3)
-                
-                # 로그인 페이지로 이동
-                self.driver.get("https://www.saramin.co.kr/zf_user/auth/login")
-                self.random_wait(5, 8)
-                
-                # 페이지 완전 로딩 대기
-                self.wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
-                self.random_wait(2, 4)
-                
-                # Alert 처리 (서버 오류 메시지)
-                try:
-                    alert = self.driver.switch_to.alert
-                    alert_text = alert.text
-                    self.logger.warning(f"Alert 감지: {alert_text}")
-                    
-                    if "내부 서버 문제" in alert_text:
-                        alert.accept()
-                        self.logger.warning(f"서버 문제 감지 - 재시도 {attempt + 1}/{max_retries}")
-                        # 서버 문제 시 더 긴 대기와 브라우저 초기화
-                        self.random_wait(20, 30)
-                        if attempt < max_retries - 1:
-                            # 브라우저 완전 재시작
-                            try:
-                                self.driver.quit()
-                            except:
-                                pass
-                            self.setup_driver()
-                            self.random_wait(5, 10)
-                        continue
-                    else:
-                        alert.accept()
-                except:
-                    pass  # Alert가 없으면 정상 진행
-                
-                # 로그인 필드 찾기 (다양한 선택자 시도)
-                id_selectors = [
-                    (By.ID, "loginId"),
-                    (By.NAME, "id"),
-                    (By.CSS_SELECTOR, "input[placeholder*='아이디']"),
-                    (By.CSS_SELECTOR, "input[type='text']"),
-                    (By.XPATH, "//input[@placeholder='아이디 또는 이메일']")
-                ]
-                
-                id_input = None
-                for selector_type, selector_value in id_selectors:
-                    try:
-                        id_input = self.wait.until(
-                            EC.element_to_be_clickable((selector_type, selector_value))
-                        )
-                        break
-                    except:
-                        continue
-                
-                if not id_input:
-                    self.logger.error("로그인 아이디 필드를 찾을 수 없습니다")
-                    continue
-                
-                # 자연스러운 아이디 입력
-                id_input.click()
-                self.random_wait(0.5, 1)
-                id_input.clear()
-                self.random_wait(0.5, 1)
-                self.type_like_human(id_input, self.config.username)
-                
-                # 비밀번호 필드 찾기
-                password_selectors = [
-                    (By.ID, "password"),
-                    (By.NAME, "password"),
-                    (By.CSS_SELECTOR, "input[type='password']"),
-                    (By.CSS_SELECTOR, "input[placeholder*='비밀번호']")
-                ]
-                
-                password_input = None
-                for selector_type, selector_value in password_selectors:
-                    try:
-                        password_input = self.driver.find_element(selector_type, selector_value)
-                        break
-                    except:
-                        continue
-                
-                if not password_input:
-                    self.logger.error("비밀번호 필드를 찾을 수 없습니다")
-                    continue
-                
-                # 자연스러운 비밀번호 입력
-                password_input.click()
-                self.random_wait(0.5, 1)
-                password_input.clear()
-                self.random_wait(0.5, 1)
-                self.type_like_human(password_input, self.config.password)
-                
-                self.random_wait(2, 4)
-                
-                # 로그인 버튼 찾기 (다양한 선택자 시도)
-                login_selectors = [
-                    (By.CSS_SELECTOR, ".btn_login"),
-                    (By.CSS_SELECTOR, "button[type='submit']"),
-                    (By.XPATH, "//button[contains(text(), '로그인')]"),
-                    (By.CSS_SELECTOR, "input[type='submit']"),
-                    (By.CSS_SELECTOR, ".login-btn"),
-                    (By.ID, "loginBtn")
-                ]
-                
-                login_btn = None
-                for selector_type, selector_value in login_selectors:
-                    try:
-                        login_btn = self.driver.find_element(selector_type, selector_value)
-                        if login_btn.is_enabled():
-                            break
-                    except:
-                        continue
-                
-                if not login_btn:
-                    self.logger.error("로그인 버튼을 찾을 수 없습니다")
-                    continue
-                
-                # 자연스러운 버튼 클릭
-                self.driver.execute_script("arguments[0].focus();", login_btn)
-                self.random_wait(0.5, 1)
-                self.driver.execute_script("arguments[0].click();", login_btn)
-                
-                # 로그인 후 Alert 재확인
-                self.random_wait(3, 5)
-                try:
-                    alert = self.driver.switch_to.alert
-                    alert_text = alert.text
-                    self.logger.warning(f"로그인 후 Alert: {alert_text}")
-                    
-                    if "내부 서버 문제" in alert_text:
-                        alert.accept()
-                        if attempt < max_retries - 1:
-                            self.logger.warning(f"서버 문제로 재시도 {attempt + 1}/{max_retries}")
-                            self.random_wait(15, 20)
-                            continue
-                        else:
-                            self.logger.error("서버 문제로 로그인 불가")
-                            return False
-                    else:
-                        alert.accept()
-                except:
-                    pass  # Alert가 없으면 정상
-                
-                # 로그인 성공 확인 (URL 변경 대기)
-                try:
-                    self.wait.until(lambda driver: driver.current_url != f"{self.base_url}/zf_user/auth/login")
-                except TimeoutException:
-                    if attempt < max_retries - 1:
-                        self.logger.warning(f"로그인 시간 초과 - 재시도 {attempt + 1}/{max_retries}")
-                        self.random_wait(5, 10)
-                        continue
-                    else:
-                        self.logger.error("로그인 시간 초과")
-                        return False
-                
-                # 메인 페이지로 이동했는지 확인
-                current_url = self.driver.current_url
-                if "login" not in current_url and "auth" not in current_url:
-                    self.logger.info("로그인 성공")
-                    self.random_wait(2, 3)
+                id_input = self.driver.find_element(By.ID, "id")
+            except Exception:
+                pass
+            if not id_input:
+                self.logger.warning("자동화 접근 차단 감지: 수동 로그인을 안내합니다.")
+                print("\n[수동 로그인 안내] 사람인 로그인 페이지가 자동화로 차단되었습니다.\n브라우저 창에서 직접 로그인 후 엔터를 눌러주세요...")
+                input("로그인 완료 후 엔터를 누르세요: ")
+                # 로그인 성공 여부 간단 확인 (로그인 후 URL이 로그인 페이지가 아니면 성공)
+                if "login" not in self.driver.current_url and "auth" not in self.driver.current_url:
+                    self.logger.info("수동 로그인 성공. 자동화 재개.")
                     return True
                 else:
-                    if attempt < max_retries - 1:
-                        self.logger.warning(f"로그인 실패 - 재시도 {attempt + 1}/{max_retries}")
-                        self.random_wait(5, 10)
-                        continue
-                    else:
-                        self.logger.error("로그인 실패 - 잘못된 자격증명이거나 추가 인증이 필요할 수 있습니다")
-                        return False
-                        
-            except TimeoutException:
-                if attempt < max_retries - 1:
-                    self.logger.warning(f"로그인 페이지 로딩 시간 초과 - 재시도 {attempt + 1}/{max_retries}")
-                    self.random_wait(10, 15)
-                    continue
-                else:
-                    self.logger.error("로그인 페이지 로딩 시간 초과")
+                    self.logger.error("수동 로그인 실패 또는 추가 인증 필요.")
                     return False
-            except Exception as e:
-                if attempt < max_retries - 1:
-                    self.logger.warning(f"로그인 중 오류 발생 - 재시도 {attempt + 1}/{max_retries}: {str(e)}")
-                    self.random_wait(10, 15)
-                    continue
+
+            # 자동화 입력 시도 (폼이 있을 때만)
+            self.logger.info("자동 로그인 입력 시도")
+            id_input.click()
+            self.random_wait(0.5, 1)
+            id_input.clear()
+            self.random_wait(0.5, 1)
+            self.type_like_human(id_input, self.config.username)
+            password_input = self.driver.find_element(By.ID, "password")
+            password_input.click()
+            self.random_wait(0.5, 1)
+            password_input.clear()
+            self.random_wait(0.5, 1)
+            self.type_like_human(password_input, self.config.password)
+            self.random_wait(2, 4)
+            login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit'], .btn_login, #loginBtn")
+            self.driver.execute_script("arguments[0].focus();", login_btn)
+            self.random_wait(0.5, 1)
+            self.driver.execute_script("arguments[0].click();", login_btn)
+            self.random_wait(3, 5)
+            # 로그인 성공 확인
+            if "login" not in self.driver.current_url and "auth" not in self.driver.current_url:
+                self.logger.info("자동 로그인 성공")
+                return True
+            else:
+                self.logger.error("자동 로그인 실패. 수동 로그인 안내.")
+                print("\n[수동 로그인 안내] 자동 로그인에 실패했습니다. 브라우저에서 직접 로그인 후 엔터를 눌러주세요...")
+                input("로그인 완료 후 엔터를 누르세요: ")
+                if "login" not in self.driver.current_url and "auth" not in self.driver.current_url:
+                    self.logger.info("수동 로그인 성공. 자동화 재개.")
+                    return True
                 else:
-                    self.logger.error(f"로그인 중 오류 발생: {str(e)}")
+                    self.logger.error("수동 로그인 실패 또는 추가 인증 필요.")
                     return False
-        
-        self.logger.error(f"로그인 실패 - {max_retries}번 시도 후 포기")
-        return False
+        except Exception as e:
+            self.logger.error(f"로그인 중 예외 발생: {str(e)}")
+            print("\n[수동 로그인 안내] 예외 발생. 브라우저에서 직접 로그인 후 엔터를 눌러주세요...")
+            input("로그인 완료 후 엔터를 누르세요: ")
+            if "login" not in self.driver.current_url and "auth" not in self.driver.current_url:
+                self.logger.info("수동 로그인 성공. 자동화 재개.")
+                return True
+            else:
+                self.logger.error("수동 로그인 실패 또는 추가 인증 필요.")
+                return False
     
     def search_and_apply_jobs(self):
         """채용 공고 검색 및 지원"""

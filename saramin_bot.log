@@ -3794,3 +3794,693 @@ Stacktrace:
 2025-07-03 04:45:07 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): (주)리비바이오
 2025-07-03 04:45:07 - saramin_bot - INFO - 지원 시도: (주)리비바이오 - 안드로이드개발 산업기능요원
 2025-07-03 04:45:07 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 13:34:00 - saramin_bot - ERROR - 메인 실행 중 오류 발생: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-11 13:34:43 - saramin_bot - ERROR - 메인 실행 중 오류 발생: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-07-11 13:36:57 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:37:09 - saramin_bot - INFO - Chrome WebDriver 설정 완료
+2025-07-11 13:37:09 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 13:37:46 - saramin_bot - ERROR - 로그인 아이디 필드를 찾을 수 없습니다
+2025-07-11 13:37:46 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 13:37:46 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 2/3: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x0000000102988e6c cxxbridge1$str$ptr + 2722840
+1   chromedriver                        0x0000000102980d74 cxxbridge1$str$ptr + 2689824
+2   chromedriver                        0x00000001024d23ec cxxbridge1$string$len + 90648
+3   chromedriver                        0x00000001024ac144 chromedriver + 131396
+4   chromedriver                        0x000000010254160c cxxbridge1$string$len + 545848
+5   chromedriver                        0x000000010255a454 cxxbridge1$string$len + 647808
+6   chromedriver                        0x000000010250d834 cxxbridge1$string$len + 333408
+7   chromedriver                        0x000000010294bf88 cxxbridge1$str$ptr + 2473268
+8   chromedriver                        0x000000010294f1f4 cxxbridge1$str$ptr + 2486176
+9   chromedriver                        0x000000010292d9d0 cxxbridge1$str$ptr + 2348924
+10  chromedriver                        0x000000010294fab0 cxxbridge1$str$ptr + 2488412
+11  chromedriver                        0x000000010291ea60 cxxbridge1$str$ptr + 2287628
+12  chromedriver                        0x000000010296f9a0 cxxbridge1$str$ptr + 2619212
+13  chromedriver                        0x000000010296fb2c cxxbridge1$str$ptr + 2619608
+14  chromedriver                        0x00000001029809b0 cxxbridge1$str$ptr + 2688860
+15  libsystem_pthread.dylib             0x0000000192b482e4 _pthread_start + 136
+16  libsystem_pthread.dylib             0x0000000192b430fc thread_start + 8
+
+2025-07-11 13:37:59 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 13:37:59 - saramin_bot - ERROR - 로그인 중 오류 발생: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x0000000102988e6c cxxbridge1$str$ptr + 2722840
+1   chromedriver                        0x0000000102980d74 cxxbridge1$str$ptr + 2689824
+2   chromedriver                        0x00000001024d23ec cxxbridge1$string$len + 90648
+3   chromedriver                        0x00000001024ac144 chromedriver + 131396
+4   chromedriver                        0x000000010254160c cxxbridge1$string$len + 545848
+5   chromedriver                        0x000000010255a454 cxxbridge1$string$len + 647808
+6   chromedriver                        0x000000010250d834 cxxbridge1$string$len + 333408
+7   chromedriver                        0x000000010294bf88 cxxbridge1$str$ptr + 2473268
+8   chromedriver                        0x000000010294f1f4 cxxbridge1$str$ptr + 2486176
+9   chromedriver                        0x000000010292d9d0 cxxbridge1$str$ptr + 2348924
+10  chromedriver                        0x000000010294fab0 cxxbridge1$str$ptr + 2488412
+11  chromedriver                        0x000000010291ea60 cxxbridge1$str$ptr + 2287628
+12  chromedriver                        0x000000010296f9a0 cxxbridge1$str$ptr + 2619212
+13  chromedriver                        0x000000010296fb2c cxxbridge1$str$ptr + 2619608
+14  chromedriver                        0x00000001029809b0 cxxbridge1$str$ptr + 2688860
+15  libsystem_pthread.dylib             0x0000000192b482e4 _pthread_start + 136
+16  libsystem_pthread.dylib             0x0000000192b430fc thread_start + 8
+
+2025-07-11 13:37:59 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:37:59 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 13:38:54 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:38:54 - saramin_bot - INFO - Chrome WebDriver 설정 완료
+2025-07-11 13:38:54 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 13:39:41 - saramin_bot - WARNING - 로그인 실패 - 재시도 1/3
+2025-07-11 13:39:48 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 13:40:35 - saramin_bot - WARNING - 로그인 후 Alert: 아이디 또는 비밀번호가 일치하지 않습니다.
+2025-07-11 13:40:36 - saramin_bot - WARNING - 로그인 실패 - 재시도 2/3
+2025-07-11 13:40:45 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 13:41:31 - saramin_bot - ERROR - 로그인 실패 - 잘못된 자격증명이거나 추가 인증이 필요할 수 있습니다
+2025-07-11 13:41:31 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:41:31 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 13:50:18 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:50:19 - saramin_bot - INFO - Chrome WebDriver 설정 완료
+2025-07-11 13:50:19 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 13:50:37 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 1/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x0000000104eb8e6c cxxbridge1$str$ptr + 2722840
+1   chromedriver                        0x0000000104eb0d74 cxxbridge1$str$ptr + 2689824
+2   chromedriver                        0x0000000104a023ec cxxbridge1$string$len + 90648
+3   chromedriver                        0x0000000104a8b13c cxxbridge1$string$len + 651112
+4   chromedriver                        0x0000000104a3d834 cxxbridge1$string$len + 333408
+5   chromedriver                        0x0000000104e7bf88 cxxbridge1$str$ptr + 2473268
+6   chromedriver                        0x0000000104e7f1f4 cxxbridge1$str$ptr + 2486176
+7   chromedriver                        0x0000000104e5d9d0 cxxbridge1$str$ptr + 2348924
+8   chromedriver                        0x0000000104e7fab0 cxxbridge1$str$ptr + 2488412
+9   chromedriver                        0x0000000104e4ea60 cxxbridge1$str$ptr + 2287628
+10  chromedriver                        0x0000000104e9f9a0 cxxbridge1$str$ptr + 2619212
+11  chromedriver                        0x0000000104e9fb2c cxxbridge1$str$ptr + 2619608
+12  chromedriver                        0x0000000104eb09b0 cxxbridge1$str$ptr + 2688860
+13  libsystem_pthread.dylib             0x0000000192b482e4 _pthread_start + 136
+14  libsystem_pthread.dylib             0x0000000192b430fc thread_start + 8
+
+2025-07-11 13:50:48 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 13:51:03 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 2/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x0000000104eb8e6c cxxbridge1$str$ptr + 2722840
+1   chromedriver                        0x0000000104eb0d74 cxxbridge1$str$ptr + 2689824
+2   chromedriver                        0x0000000104a023ec cxxbridge1$string$len + 90648
+3   chromedriver                        0x0000000104a8b13c cxxbridge1$string$len + 651112
+4   chromedriver                        0x0000000104a3d834 cxxbridge1$string$len + 333408
+5   chromedriver                        0x0000000104e7bf88 cxxbridge1$str$ptr + 2473268
+6   chromedriver                        0x0000000104e7f1f4 cxxbridge1$str$ptr + 2486176
+7   chromedriver                        0x0000000104e5d9d0 cxxbridge1$str$ptr + 2348924
+8   chromedriver                        0x0000000104e7fab0 cxxbridge1$str$ptr + 2488412
+9   chromedriver                        0x0000000104e4ea60 cxxbridge1$str$ptr + 2287628
+10  chromedriver                        0x0000000104e9f9a0 cxxbridge1$str$ptr + 2619212
+11  chromedriver                        0x0000000104e9fb2c cxxbridge1$str$ptr + 2619608
+12  chromedriver                        0x0000000104eb09b0 cxxbridge1$str$ptr + 2688860
+13  libsystem_pthread.dylib             0x0000000192b482e4 _pthread_start + 136
+14  libsystem_pthread.dylib             0x0000000192b430fc thread_start + 8
+
+2025-07-11 13:51:13 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 13:51:31 - saramin_bot - ERROR - 로그인 중 오류 발생: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.94)
+Stacktrace:
+0   chromedriver                        0x0000000104eb8e6c cxxbridge1$str$ptr + 2722840
+1   chromedriver                        0x0000000104eb0d74 cxxbridge1$str$ptr + 2689824
+2   chromedriver                        0x0000000104a023ec cxxbridge1$string$len + 90648
+3   chromedriver                        0x0000000104a8b13c cxxbridge1$string$len + 651112
+4   chromedriver                        0x0000000104a3d834 cxxbridge1$string$len + 333408
+5   chromedriver                        0x0000000104e7bf88 cxxbridge1$str$ptr + 2473268
+6   chromedriver                        0x0000000104e7f1f4 cxxbridge1$str$ptr + 2486176
+7   chromedriver                        0x0000000104e5d9d0 cxxbridge1$str$ptr + 2348924
+8   chromedriver                        0x0000000104e7fab0 cxxbridge1$str$ptr + 2488412
+9   chromedriver                        0x0000000104e4ea60 cxxbridge1$str$ptr + 2287628
+10  chromedriver                        0x0000000104e9f9a0 cxxbridge1$str$ptr + 2619212
+11  chromedriver                        0x0000000104e9fb2c cxxbridge1$str$ptr + 2619608
+12  chromedriver                        0x0000000104eb09b0 cxxbridge1$str$ptr + 2688860
+13  libsystem_pthread.dylib             0x0000000192b482e4 _pthread_start + 136
+14  libsystem_pthread.dylib             0x0000000192b430fc thread_start + 8
+
+2025-07-11 13:51:31 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:51:31 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 13:53:03 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:53:04 - saramin_bot - ERROR - WebDriver 설정 실패: Binary Location Must be a String
+2025-07-11 13:53:04 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:53:19 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:53:19 - saramin_bot - ERROR - WebDriver 설정 실패: 
+---------------------
+Could not determine browser executable.
+---------------------
+Make sure your browser is installed in the default location (path).
+If you are sure about the browser executable, you can specify it using
+the `browser_executable_path='/path/to/browser/executable` parameter.
+
+
+2025-07-11 13:53:19 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:56:01 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:56:03 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 13:56:03 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 13:56:21 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 1/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000100c51308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x0000000100c488ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x00000001006d9e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000100779b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000100751a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x000000010071e0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x000000010071ed61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000100c0e250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000100c12289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000100bea022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000100c12bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000100bd8d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x0000000100c35de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x0000000100c35fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000100c48451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:56:35 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 13:56:52 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 2/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000100c51308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x0000000100c488ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x00000001006d9e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000100779b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000100751a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x000000010071e0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x000000010071ed61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000100c0e250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000100c12289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000100bea022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000100c12bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000100bd8d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x0000000100c35de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x0000000100c35fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000100c48451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:57:03 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 13:57:17 - saramin_bot - ERROR - 로그인 중 오류 발생: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000100c51308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x0000000100c488ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x00000001006d9e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000100779b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000100751a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x000000010071e0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x000000010071ed61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000100c0e250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000100c12289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000100bea022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000100c12bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000100bd8d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x0000000100c35de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x0000000100c35fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000100c48451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:57:17 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:57:17 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 13:58:27 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 13:58:29 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 13:58:29 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 13:58:45 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 1/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000103111308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x00000001031088ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000102b99e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000102c39b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000102c11a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x0000000102bde0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000102bded61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x00000001030ce250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x00000001030d2289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x00000001030aa022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x00000001030d2bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000103098d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x00000001030f5de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x00000001030f5fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000103108451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:58:58 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 13:59:15 - saramin_bot - WARNING - 로그인 중 오류 발생 - 재시도 2/3: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000103111308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x00000001031088ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000102b99e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000102c39b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000102c11a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x0000000102bde0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000102bded61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x00000001030ce250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x00000001030d2289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x00000001030aa022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x00000001030d2bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000103098d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x00000001030f5de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x00000001030f5fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000103108451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:59:29 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 13:59:46 - saramin_bot - ERROR - 로그인 중 오류 발생: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000103111308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x00000001031088ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000102b99e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000102c39b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000102c11a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x0000000102bde0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000102bded61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x00000001030ce250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x00000001030d2289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x00000001030aa022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x00000001030d2bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000103098d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x00000001030f5de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x00000001030f5fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000103108451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 13:59:46 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 13:59:46 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 14:01:13 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:01:16 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:01:16 - saramin_bot - INFO - 사람인 로그인 시도 중... (1/3)
+2025-07-11 14:01:31 - saramin_bot - ERROR - 로그인 페이지 HTML 저장 실패: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000105090b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:01:34 - saramin_bot - WARNING - iframe 전환 시도 실패: Message: no such element: element not found
+  (Session info: chrome=138.0.7204.101); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x000000010500469b undetected_chromedriver + 497307
+4   undetected_chromedriver             0x0000000105003452 undetected_chromedriver + 492626
+5   undetected_chromedriver             0x0000000104ff8589 undetected_chromedriver + 447881
+6   undetected_chromedriver             0x0000000104ff86b5 undetected_chromedriver + 448181
+7   undetected_chromedriver             0x0000000104ff66b8 undetected_chromedriver + 439992
+8   undetected_chromedriver             0x0000000104ffa86a undetected_chromedriver + 456810
+9   undetected_chromedriver             0x0000000104ffa8f2 undetected_chromedriver + 456946
+10  undetected_chromedriver             0x000000010509127a undetected_chromedriver + 1073786
+11  undetected_chromedriver             0x0000000105068cc2 undetected_chromedriver + 908482
+12  undetected_chromedriver             0x000000010509018c undetected_chromedriver + 1069452
+13  undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+14  undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+15  undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+16  undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+17  undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+18  undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+19  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+20  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+21  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+22  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+23  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+24  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+25  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:02:57 - saramin_bot - ERROR - 로그인 아이디 필드를 찾을 수 없습니다. selectors: [('id', 'id'), ('id', 'loginId'), ('name', 'id'), ('css selector', "input[placeholder*='아이디']"), ('css selector', "input[aria-label*='아이디']"), ('css selector', "input[type='text'][name='id']"), ('css selector', "input[type='text']"), ('xpath', "//input[contains(@placeholder, '아이디') or contains(@aria-label, '아이디') or @name='id' or @id='id']")]
+2025-07-11 14:02:57 - saramin_bot - ERROR - 현재 URL: https://www.saramin.co.kr/zf_user/auth?
+2025-07-11 14:02:57 - saramin_bot - ERROR - 페이지 일부: <html><head></head><body></body></html>
+2025-07-11 14:02:57 - saramin_bot - INFO - 사람인 로그인 시도 중... (2/3)
+2025-07-11 14:03:14 - saramin_bot - ERROR - 로그인 페이지 HTML 저장 실패: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000105090b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:03:17 - saramin_bot - WARNING - iframe 전환 시도 실패: Message: no such element: element not found
+  (Session info: chrome=138.0.7204.101); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x000000010500469b undetected_chromedriver + 497307
+4   undetected_chromedriver             0x0000000105003452 undetected_chromedriver + 492626
+5   undetected_chromedriver             0x0000000104ff8589 undetected_chromedriver + 447881
+6   undetected_chromedriver             0x0000000104ff86b5 undetected_chromedriver + 448181
+7   undetected_chromedriver             0x0000000104ff66b8 undetected_chromedriver + 439992
+8   undetected_chromedriver             0x0000000104ffa86a undetected_chromedriver + 456810
+9   undetected_chromedriver             0x0000000104ffa8f2 undetected_chromedriver + 456946
+10  undetected_chromedriver             0x000000010509127a undetected_chromedriver + 1073786
+11  undetected_chromedriver             0x0000000105068cc2 undetected_chromedriver + 908482
+12  undetected_chromedriver             0x000000010509018c undetected_chromedriver + 1069452
+13  undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+14  undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+15  undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+16  undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+17  undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+18  undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+19  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+20  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+21  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+22  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+23  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+24  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+25  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:04:40 - saramin_bot - ERROR - 로그인 아이디 필드를 찾을 수 없습니다. selectors: [('id', 'id'), ('id', 'loginId'), ('name', 'id'), ('css selector', "input[placeholder*='아이디']"), ('css selector', "input[aria-label*='아이디']"), ('css selector', "input[type='text'][name='id']"), ('css selector', "input[type='text']"), ('xpath', "//input[contains(@placeholder, '아이디') or contains(@aria-label, '아이디') or @name='id' or @id='id']")]
+2025-07-11 14:04:40 - saramin_bot - ERROR - 현재 URL: https://www.saramin.co.kr/zf_user/auth?
+2025-07-11 14:04:40 - saramin_bot - ERROR - 페이지 일부: <html><head></head><body></body></html>
+2025-07-11 14:04:40 - saramin_bot - INFO - 사람인 로그인 시도 중... (3/3)
+2025-07-11 14:04:56 - saramin_bot - ERROR - 로그인 페이지 HTML 저장 실패: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000105090b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:04:58 - saramin_bot - WARNING - iframe 전환 시도 실패: Message: no such element: element not found
+  (Session info: chrome=138.0.7204.101); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+0   undetected_chromedriver             0x0000000105568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010555f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x000000010500469b undetected_chromedriver + 497307
+4   undetected_chromedriver             0x0000000105003452 undetected_chromedriver + 492626
+5   undetected_chromedriver             0x0000000104ff8589 undetected_chromedriver + 447881
+6   undetected_chromedriver             0x0000000104ff86b5 undetected_chromedriver + 448181
+7   undetected_chromedriver             0x0000000104ff66b8 undetected_chromedriver + 439992
+8   undetected_chromedriver             0x0000000104ffa86a undetected_chromedriver + 456810
+9   undetected_chromedriver             0x0000000104ffa8f2 undetected_chromedriver + 456946
+10  undetected_chromedriver             0x000000010509127a undetected_chromedriver + 1073786
+11  undetected_chromedriver             0x0000000105068cc2 undetected_chromedriver + 908482
+12  undetected_chromedriver             0x000000010509018c undetected_chromedriver + 1069452
+13  undetected_chromedriver             0x0000000105068a93 undetected_chromedriver + 907923
+14  undetected_chromedriver             0x00000001050350f7 undetected_chromedriver + 696567
+15  undetected_chromedriver             0x0000000105035d61 undetected_chromedriver + 699745
+16  undetected_chromedriver             0x0000000105525250 undetected_chromedriver + 5874256
+17  undetected_chromedriver             0x0000000105529289 undetected_chromedriver + 5890697
+18  undetected_chromedriver             0x0000000105501022 undetected_chromedriver + 5726242
+19  undetected_chromedriver             0x0000000105529bff undetected_chromedriver + 5893119
+20  undetected_chromedriver             0x00000001054efd14 undetected_chromedriver + 5655828
+21  undetected_chromedriver             0x000000010554cde8 undetected_chromedriver + 6036968
+22  undetected_chromedriver             0x000000010554cfb0 undetected_chromedriver + 6037424
+23  undetected_chromedriver             0x000000010555f451 undetected_chromedriver + 6112337
+24  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+25  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:06:20 - saramin_bot - ERROR - 로그인 아이디 필드를 찾을 수 없습니다. selectors: [('id', 'id'), ('id', 'loginId'), ('name', 'id'), ('css selector', "input[placeholder*='아이디']"), ('css selector', "input[aria-label*='아이디']"), ('css selector', "input[type='text'][name='id']"), ('css selector', "input[type='text']"), ('xpath', "//input[contains(@placeholder, '아이디') or contains(@aria-label, '아이디') or @name='id' or @id='id']")]
+2025-07-11 14:06:20 - saramin_bot - ERROR - 현재 URL: https://www.saramin.co.kr/zf_user/auth?
+2025-07-11 14:06:20 - saramin_bot - ERROR - 페이지 일부: <html><head></head><body></body></html>
+2025-07-11 14:06:20 - saramin_bot - ERROR - 로그인 실패 - 3번 시도 후 포기
+2025-07-11 14:06:20 - saramin_bot - ERROR - 로그인에 실패했습니다.
+2025-07-11 14:06:20 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 14:14:10 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:14:12 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:14:12 - saramin_bot - INFO - 사람인 자동 로그인 시도
+2025-07-11 14:14:19 - saramin_bot - INFO - 로그인 페이지 HTML 저장 완료: saramin_login_debug.html
+2025-07-11 14:14:22 - saramin_bot - INFO - 자동 로그인 입력 시도
+2025-07-11 14:14:38 - saramin_bot - INFO - 자동 로그인 성공
+2025-07-11 14:14:38 - saramin_bot - INFO - 키워드 'bio' 검색 시작
+2025-07-11 14:14:43 - saramin_bot - INFO - 검색 조건: bio, 서울, 정규직
+2025-07-11 14:14:43 - saramin_bot - INFO - 키워드 'bio' - 페이지 1 처리 중...
+2025-07-11 14:14:43 - saramin_bot - INFO - 현재 페이지에서 50개의 채용 공고를 발견했습니다.
+2025-07-11 14:14:50 - saramin_bot - INFO - 제목 발견 (h1): 학술팀 경력직 모집
+2025-07-11 14:14:50 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): ㈜유유제약
+2025-07-11 14:14:50 - saramin_bot - INFO - 지원 시도: ㈜유유제약 - 학술팀 경력직 모집
+2025-07-11 14:14:50 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 14:14:52 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:14:52 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/jobs/relay/view?isMypage=no&rec_idx=51274047&recommend_ids=eJxtzrkBwzAMA8Bp0vMDSNYeRPtvETkWU7k88I12hUcv%2BeQVzRbzeJAVLf0AIllefuCbmVMhCJsK9w4ewBEc0MCamaC16LRpI3valFEHKsxkrf3Uj7bvIl%2B44h%2B43MEXqL4umQ%3D%3D&view_type=search&searchword=bio&searchType=search&gz=1&relayNonce=b62b1285630c64d37bbc&paid_fl=n&search_uuid=5a678df4-5a4a-4022-8348-d733e8c07414&immediately_apply_layer_open=n#seq=0
+2025-07-11 14:14:52 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:14:52 - saramin_bot - INFO - 제출 버튼 발견: .btn_apply
+2025-07-11 14:14:52 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:14:56 - saramin_bot - INFO - 지원 완료: ㈜유유제약 - 학술팀 경력직 모집
+2025-07-11 14:15:34 - saramin_bot - INFO - 지원 시도: 회사명 없음 - 제목 없음
+2025-07-11 14:15:34 - saramin_bot - ERROR - 채용 공고 지원 중 오류: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000105418308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010540f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ea0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000104e757d0 undetected_chromedriver + 239568
+4   undetected_chromedriver             0x0000000104f20e98 undetected_chromedriver + 941720
+5   undetected_chromedriver             0x0000000104f3fb3c undetected_chromedriver + 1067836
+6   undetected_chromedriver             0x0000000104f18a93 undetected_chromedriver + 907923
+7   undetected_chromedriver             0x0000000104ee50f7 undetected_chromedriver + 696567
+8   undetected_chromedriver             0x0000000104ee5d61 undetected_chromedriver + 699745
+9   undetected_chromedriver             0x00000001053d5250 undetected_chromedriver + 5874256
+10  undetected_chromedriver             0x00000001053d9289 undetected_chromedriver + 5890697
+11  undetected_chromedriver             0x00000001053b1022 undetected_chromedriver + 5726242
+12  undetected_chromedriver             0x00000001053d9bff undetected_chromedriver + 5893119
+13  undetected_chromedriver             0x000000010539fd14 undetected_chromedriver + 5655828
+14  undetected_chromedriver             0x00000001053fcde8 undetected_chromedriver + 6036968
+15  undetected_chromedriver             0x00000001053fcfb0 undetected_chromedriver + 6037424
+16  undetected_chromedriver             0x000000010540f451 undetected_chromedriver + 6112337
+17  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+18  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:16:08 - saramin_bot - ERROR - 채용 공고 지원 중 오류: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000105418308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010540f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000104ea0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000104e757d0 undetected_chromedriver + 239568
+4   undetected_chromedriver             0x0000000104f20e98 undetected_chromedriver + 941720
+5   undetected_chromedriver             0x0000000104f3fb3c undetected_chromedriver + 1067836
+6   undetected_chromedriver             0x0000000104f18a93 undetected_chromedriver + 907923
+7   undetected_chromedriver             0x0000000104ee50f7 undetected_chromedriver + 696567
+8   undetected_chromedriver             0x0000000104ee5d61 undetected_chromedriver + 699745
+9   undetected_chromedriver             0x00000001053d5250 undetected_chromedriver + 5874256
+10  undetected_chromedriver             0x00000001053d9289 undetected_chromedriver + 5890697
+11  undetected_chromedriver             0x00000001053b1022 undetected_chromedriver + 5726242
+12  undetected_chromedriver             0x00000001053d9bff undetected_chromedriver + 5893119
+13  undetected_chromedriver             0x000000010539fd14 undetected_chromedriver + 5655828
+14  undetected_chromedriver             0x00000001053fcde8 undetected_chromedriver + 6036968
+15  undetected_chromedriver             0x00000001053fcfb0 undetected_chromedriver + 6037424
+16  undetected_chromedriver             0x000000010540f451 undetected_chromedriver + 6112337
+17  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+18  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:17:04 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:17:07 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:17:07 - saramin_bot - INFO - 사람인 자동 로그인 시도
+2025-07-11 14:17:14 - saramin_bot - ERROR - 로그인 페이지 HTML 저장 실패: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000102811308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x00000001028088ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000102299e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000102339b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000102311a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x00000001022de0f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x00000001022ded61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x00000001027ce250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x00000001027d2289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x00000001027aa022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x00000001027d2bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x0000000102798d14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x00000001027f5de8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x00000001027f5fb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x0000000102808451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:17:19 - saramin_bot - INFO - 자동 로그인 입력 시도
+2025-07-11 14:17:35 - saramin_bot - INFO - 자동 로그인 성공
+2025-07-11 14:17:35 - saramin_bot - INFO - 키워드 'bio' 검색 시작
+2025-07-11 14:17:40 - saramin_bot - INFO - 검색 조건: bio, 서울, 정규직
+2025-07-11 14:17:40 - saramin_bot - INFO - 키워드 'bio' - 페이지 1 처리 중...
+2025-07-11 14:17:40 - saramin_bot - INFO - 현재 페이지에서 50개의 채용 공고를 발견했습니다.
+2025-07-11 14:17:47 - saramin_bot - INFO - 제목 발견 (h1): 이용호님
+2025-07-11 14:17:47 - saramin_bot - INFO - 지원 시도: 회사명 없음 - 이용호님
+2025-07-11 14:17:47 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): a[href*='apply']
+2025-07-11 14:17:51 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:17:51 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/persons/apply-status-list
+2025-07-11 14:17:51 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:17:51 - saramin_bot - INFO - 제출 버튼 발견: button[class*='apply']
+2025-07-11 14:17:51 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:17:55 - saramin_bot - INFO - 지원 완료: 회사명 없음 - 이용호님
+2025-07-11 14:18:37 - saramin_bot - INFO - 제목 발견 (h1): 바이오 중견기업 회계담당 채용.
+2025-07-11 14:18:37 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): 굿커리어
+2025-07-11 14:18:37 - saramin_bot - INFO - 지원 시도: 굿커리어 - 바이오 중견기업 회계담당 채용.
+2025-07-11 14:18:37 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 14:18:40 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:18:40 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/jobs/relay/view?isMypage=no&rec_idx=51274464&recommend_ids=eJxNj8sRw1AIA6vJHYn%2F2YW4%2Fy7yMhkbjjuLEDgYJo67gE9eDnSG2IvURujYaLLHhtFlZUMZg1qgH5Q%2FJljctmVWId2832FClDXZMsUqOqO5ssHWelDKghKTVaqtXpBuj5VEiee66vyX64w65me%2F9%2Bk%2Fig%3D%3D&view_type=search&searchword=bio&searchType=search&gz=1&relayNonce=687ff157b96308f3edc1&paid_fl=n&search_uuid=a7356dc7-ee72-41f0-af39-c976f32ce49e&immediately_apply_layer_open=n#seq=0
+2025-07-11 14:18:40 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:18:40 - saramin_bot - INFO - 제출 버튼 발견: .btn_apply
+2025-07-11 14:18:40 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:18:44 - saramin_bot - INFO - 지원 완료: 굿커리어 - 바이오 중견기업 회계담당 채용.
+2025-07-11 14:19:25 - saramin_bot - INFO - 제목 발견 (h1): 임원 비서 (정규직)-메디컬 전문 기업
+2025-07-11 14:19:25 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): (주)에이치알원컨설팅
+2025-07-11 14:19:25 - saramin_bot - INFO - 지원 시도: (주)에이치알원컨설팅 - 임원 비서 (정규직)-메디컬 전문 기업
+2025-07-11 14:19:25 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 14:19:27 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:19:27 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/jobs/relay/view?isMypage=no&rec_idx=51274432&recommend_ids=eJxNj7kNA0EMA6txLlJ%2F7ELcfxfeM%2BCVwgFHDx0ME8engFe%2BHegMsYPyQ2oj9CKiyb7ymaXLpB3KmFVaoA8mWBxZq6VX6uY9dyHKGrlMISMfNddssLX%2BKGVBiXWIahwZpN%2BCkijxXD%2BffrneqJM86Rf1Bz%2BH&view_type=search&searchword=bio&searchType=search&gz=1&relayNonce=43a0f84f678591e3d953&paid_fl=n&search_uuid=a7356dc7-ee72-41f0-af39-c976f32ce49e&immediately_apply_layer_open=n#seq=0
+2025-07-11 14:19:28 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:19:28 - saramin_bot - INFO - 제출 버튼 발견: .btn_apply
+2025-07-11 14:19:28 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:19:31 - saramin_bot - INFO - 지원 완료: (주)에이치알원컨설팅 - 임원 비서 (정규직)-메디컬 전문 기업
+2025-07-11 14:20:08 - saramin_bot - INFO - 제목 발견 (h1): 서울안강병원 검진 초음파사 채용(심장초음파 가능 우대)
+2025-07-11 14:20:08 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): 안강병원
+2025-07-11 14:20:08 - saramin_bot - INFO - 지원 시도: 안강병원 - 서울안강병원 검진 초음파사 채용(심장초음파 가능 우대)
+2025-07-11 14:20:08 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 14:20:11 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:20:11 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/jobs/relay/view?isMypage=no&rec_idx=51274390&recommend_ids=eJxNj8sNQkEMA6vhHjv%2FM4XQfxfsQ2KT42hsxXEwTByfAl75dqAzxA7KD6mN0IuIJvuGT5cuqxvKGNQCfboJFrdt6WXdfJAQZY0tU8jgiebMQLC1%2FihlQYkJK9XWXZB%2BH5REiedadf7LNaOOeewX9Ls%2Fhg%3D%3D&view_type=search&searchword=bio&searchType=search&gz=1&relayNonce=0024e1dd2b45b319a07e&paid_fl=n&search_uuid=a7356dc7-ee72-41f0-af39-c976f32ce49e&immediately_apply_layer_open=n#seq=0
+2025-07-11 14:20:11 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:20:11 - saramin_bot - INFO - 제출 버튼 발견: .btn_apply
+2025-07-11 14:20:11 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:20:15 - saramin_bot - INFO - 지원 완료: 안강병원 - 서울안강병원 검진 초음파사 채용(심장초음파 가능 우대)
+2025-07-11 14:20:57 - saramin_bot - INFO - 제목 발견 (h1): 심사운영팀장 모집
+2025-07-11 14:20:57 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): ㈜유유제약
+2025-07-11 14:20:57 - saramin_bot - INFO - 지원 시도: ㈜유유제약 - 심사운영팀장 모집
+2025-07-11 14:20:57 - saramin_bot - INFO - 중복 지원 방지: ㈜유유제약에 이미 지원함 (최근 30일 내)
+2025-07-11 14:22:16 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:22:18 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:22:18 - saramin_bot - INFO - 사람인 자동 로그인 시도
+2025-07-11 14:22:27 - saramin_bot - INFO - 로그인 페이지 HTML 저장 완료: saramin_login_debug.html
+2025-07-11 14:22:30 - saramin_bot - INFO - 자동 로그인 입력 시도
+2025-07-11 14:22:47 - saramin_bot - INFO - 자동 로그인 성공
+2025-07-11 14:22:47 - saramin_bot - INFO - 키워드 'bio' 검색 시작
+2025-07-11 14:22:52 - saramin_bot - INFO - 검색 조건: bio, 서울, 정규직
+2025-07-11 14:22:52 - saramin_bot - INFO - 키워드 'bio' - 페이지 1 처리 중...
+2025-07-11 14:22:52 - saramin_bot - INFO - 현재 페이지에서 0개의 채용 공고를 발견했습니다.
+2025-07-11 14:22:52 - saramin_bot - INFO - 키워드 'bio' - 더 이상 채용 공고가 없습니다.
+2025-07-11 14:22:52 - saramin_bot - INFO - 키워드 'bio' 검색 완료 - 0개 지원
+2025-07-11 14:22:52 - saramin_bot - INFO - 전체 검색 완료 - 총 0개 지원
+2025-07-11 14:22:52 - saramin_bot - INFO - 스크립트 실행 완료. 총 0개 채용공고에 지원했습니다.
+2025-07-11 14:22:52 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 14:23:42 - saramin_bot - INFO - 오늘 이미 스크립트가 실행되었습니다. 내일 다시 시도해주세요.
+2025-07-11 14:24:26 - saramin_bot - INFO - 오늘 이미 스크립트가 실행되었습니다. 내일 다시 시도해주세요.
+2025-07-11 14:28:33 - saramin_bot - INFO - 오늘 이미 스크립트가 실행되었습니다. 내일 다시 시도해주세요.
+2025-07-11 14:32:18 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:32:21 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:32:21 - saramin_bot - INFO - 사람인 자동 로그인 시도
+2025-07-11 14:32:26 - saramin_bot - INFO - 로그인 페이지 HTML 저장 완료: saramin_login_debug.html
+2025-07-11 14:32:29 - saramin_bot - INFO - 자동 로그인 입력 시도
+2025-07-11 14:32:44 - saramin_bot - INFO - 자동 로그인 성공
+2025-07-11 14:32:44 - saramin_bot - INFO - 키워드 'bio' 검색 시작
+2025-07-11 14:32:50 - saramin_bot - INFO - 검색 조건: bio, 서울, 정규직
+2025-07-11 14:32:50 - saramin_bot - INFO - 키워드 'bio' - 페이지 1 처리 중...
+2025-07-11 14:32:50 - saramin_bot - INFO - 현재 페이지에서 50개의 채용 공고를 발견했습니다.
+2025-07-11 14:32:58 - saramin_bot - INFO - 제목 발견 (h1): 중견 바이오 기업 해외법무 담당 채용.
+2025-07-11 14:32:58 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): 굿커리어
+2025-07-11 14:32:58 - saramin_bot - INFO - 지원 시도: 굿커리어 - 중견 바이오 기업 해외법무 담당 채용.
+2025-07-11 14:32:58 - saramin_bot - INFO - 중복 지원 방지: 굿커리어에 이미 지원함 (최근 30일 내)
+2025-07-11 14:33:57 - saramin_bot - INFO - 제목 발견 (h1): [중견 제약사 및 국내 CRO] MW / MWPL / 임상팀원
+2025-07-11 14:33:57 - saramin_bot - INFO - 회사명 발견 (a[class*='company']): 제이앤파트너즈코리아(주)
+2025-07-11 14:33:57 - saramin_bot - INFO - 지원 시도: 제이앤파트너즈코리아(주) - [중견 제약사 및 국내 CRO] MW / MWPL / 임상팀원
+2025-07-11 14:33:57 - saramin_bot - INFO - 지원하기 버튼 발견 (CSS): button[onclick*='apply']
+2025-07-11 14:34:00 - saramin_bot - INFO - 지원서 제출 과정 시작
+2025-07-11 14:34:00 - saramin_bot - INFO - 현재 URL: https://www.saramin.co.kr/zf_user/jobs/relay/view?isMypage=no&rec_idx=51274515&recommend_ids=eJxNj7sVA0EIA6txjsQ%2FvkKu%2Fy68drAQ6s0AwsEwcbwFfPJxoDPETpR%2FpDZCb0Q02Vc%2Bs3QZ2qGMWaUF%2BtAEi5u29KJuPpEQZY1cpliHjppTA8HWK0tZUGJkpdq6C9Lvg5Io8Vytzn%2B5atQhP%2FoF9GE%2Fhg%3D%3D&view_type=search&searchword=bio&searchType=search&gz=1&relayNonce=f7007a6f7c00e49f8ddf&paid_fl=n&search_uuid=83a65712-e423-4ff7-addf-b0309222d462&immediately_apply_layer_open=n#seq=0
+2025-07-11 14:34:00 - saramin_bot - WARNING - 이력서 선택 요소를 찾을 수 없습니다. 기본 이력서를 사용할 것으로 예상됩니다.
+2025-07-11 14:34:00 - saramin_bot - INFO - 제출 버튼 발견: .btn_apply
+2025-07-11 14:34:00 - saramin_bot - INFO - 지원서 제출 버튼 클릭
+2025-07-11 14:34:04 - saramin_bot - INFO - 지원 완료: 제이앤파트너즈코리아(주) - [중견 제약사 및 국내 CRO] MW / MWPL / 임상팀원
+2025-07-11 14:34:41 - saramin_bot - INFO - 브라우저를 닫았습니다.
+2025-07-11 14:42:00 - saramin_bot - INFO - 사람인 자동 지원 스크립트를 시작합니다.
+2025-07-11 14:42:02 - saramin_bot - INFO - undetected-chromedriver로 Chrome WebDriver 설정 완료 (anti-bot 우회)
+2025-07-11 14:42:02 - saramin_bot - INFO - 사람인 자동 로그인 시도
+2025-07-11 14:42:08 - saramin_bot - ERROR - 로그인 페이지 HTML 저장 실패: Alert Text: 내부 서버 문제로 로그인이 실패 되었습니다.
+Message: unexpected alert open: {Alert text : 내부 서버 문제로 로그인이 실패 되었습니다.}
+  (Session info: chrome=138.0.7204.101)
+Stacktrace:
+0   undetected_chromedriver             0x0000000103568308 undetected_chromedriver + 6148872
+1   undetected_chromedriver             0x000000010355f8ba undetected_chromedriver + 6113466
+2   undetected_chromedriver             0x0000000102ff0e10 undetected_chromedriver + 417296
+3   undetected_chromedriver             0x0000000103090b8f undetected_chromedriver + 1072015
+4   undetected_chromedriver             0x0000000103068a93 undetected_chromedriver + 907923
+5   undetected_chromedriver             0x00000001030350f7 undetected_chromedriver + 696567
+6   undetected_chromedriver             0x0000000103035d61 undetected_chromedriver + 699745
+7   undetected_chromedriver             0x0000000103525250 undetected_chromedriver + 5874256
+8   undetected_chromedriver             0x0000000103529289 undetected_chromedriver + 5890697
+9   undetected_chromedriver             0x0000000103501022 undetected_chromedriver + 5726242
+10  undetected_chromedriver             0x0000000103529bff undetected_chromedriver + 5893119
+11  undetected_chromedriver             0x00000001034efd14 undetected_chromedriver + 5655828
+12  undetected_chromedriver             0x000000010354cde8 undetected_chromedriver + 6036968
+13  undetected_chromedriver             0x000000010354cfb0 undetected_chromedriver + 6037424
+14  undetected_chromedriver             0x000000010355f451 undetected_chromedriver + 6112337
+15  libsystem_pthread.dylib             0x00007ff81965c253 _pthread_start + 99
+16  libsystem_pthread.dylib             0x00007ff819657bef thread_start + 15
+
+2025-07-11 14:42:13 - saramin_bot - INFO - 자동 로그인 입력 시도
+2025-07-11 14:42:29 - saramin_bot - INFO - 자동 로그인 성공
+2025-07-11 14:42:29 - saramin_bot - INFO - 키워드 'bio' 검색 시작
+2025-07-11 14:42:33 - saramin_bot - INFO - 브라우저를 닫았습니다.
